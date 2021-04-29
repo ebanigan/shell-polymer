@@ -1,4 +1,3 @@
-#define HIDE_G_ACTIN false
 #define PDB_SKIP (4*NUMSKIP)//NUMSKIP//(4*NUMSKIP)//changed at 12:13pm 6/19/15 //(2*NUMSKIP)//10
 //for movies:
 //#define PDB_SKIP (2*NUMSKIP)

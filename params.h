@@ -111,7 +111,6 @@ using namespace boost::math;
 #define OBSTACLE_FRIC (20.*FRICTION_COEFF)
 
 
-#define SIDE_BIND false
 #define SPRINGCONST (cl_springconst)//((100.*KT)/(MONO_DIAM*MONO_DIAM))//soft repulsion coeff.
 #define POLYMER_EXC_VOL_SPRING cl_polymer_exc_vol_spring
 #define BOND_SPRING (cl_bond_spring)//((100.*KT)/(MONO_DIAM*MONO_DIAM))//bond potential coeff.
@@ -195,7 +194,7 @@ See, for ex., Einstein's Investigations on the Theory of Brownian Motion*/
 
 //these only appear in crosslink_potential(), which is not used in current version of code 160928
 #define CROSSLINK_SPRING (0.5*BOND_SPRING)
-#define CROSSLINK_ATTRACTIVE_ONLY true
+#define CROSSLINK_ATTRACTIVE_ONLY true  // crosslink springs keep monos together, but don't push them apart if distance is less than max rest length
 #define CROSSLINK_LENGTH (1.2*MONO_DIAM)
 #define CROSSLINK_LENGTH2 (CROSSLINK_LENGTH*CROSSLINK_LENGTH)
 
@@ -206,14 +205,9 @@ See, for ex., Einstein's Investigations on the Theory of Brownian Motion*/
 #define PRINT_CM_ONLY false
 #define PRINT_RGYR true
 
-//true -- side binding ring, false -- side binding sites
-#define SIDE_BIND_RING false
-//variables for side binding sites on ParA
-#define RANDOM_SIDE_BIND_SITES false
+//variables for polymer polarization vectors
 #define NN_POLARIZATION_INT (0.)//strength of nearest neighbor polarization interaction
 #define NEXT_NN_POLARIZATION_INT (0.*NN_POLARIZATION_INT)//strength of interaction between polarizations of next nearest neighbors
-#define SIDE_ANGLE HALFPI//preferred angle between bond vector and polarization vector
-#define COS_SIDE_ANGLE cos(SIDE_ANGLE)
 #define POL_ANGLE (PI*10./180.)//Alternatively, this could be defined as TWOPI/PITCH, if we define PITCH to be the number of monomers for the preferred polarization to rotate 2pi
 #define COS_POL_ANGLE cos(POL_ANGLE)//preferred angle between nearest neighbor polarizations
 #define COS_TWO_POL_ANGLE cos(2.*POL_ANGLE)//aka preferred angle between next nearest neighbor polarizations.

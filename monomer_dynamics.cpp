@@ -3,8 +3,6 @@ This function is responsible for giving monomers a random displacement at each
 time step and for executing any other movements due to systematic forces.
 In addition, this subroutine carries out rotational Brownian motion.
 
-For ideas to improve this subroutine and the see 6/17/08 in notes.txt.
-
 Algorithm: loop over all cells(loop over all monomers in cell(check for and execute interactions))
 */
 
@@ -36,24 +34,11 @@ while(nn != EMPTY)
 icounter = 0;
 for(ix2 = (ii - 1 + N[0])%N[0]; icounter < 3; ix2 = (ix2+1)%N[0], icounter++)
 {
-/*//-1 problem fixed. 151028
-  if(ix2 != -1)
-    ix = ix2;
-  else
-    ix = N[0]-1;
-*/
  ix = ix2;
 
  jcounter = 0;
  for(jy2 = (jj - 1 + N[1])%N[1]; jcounter < 3; jy2 = (jy2+1)%N[1], jcounter++)
  {
-
-/*
-  if(jy2 != -1)
-    jy = jy2;
-  else
-    jy = N[1]-1;
-*/
   jy = jy2;
 
   kcounter = 0;
@@ -91,22 +76,12 @@ for(ix2 = (ii - 1 + N[0])%N[0]; icounter < 3; ix2 = (ix2+1)%N[0], icounter++)
 		avoid = true;
 	}
 
-//apply systematic forces and torques first, if applicable
+//apply systematic forces/torques first, if applicable
       if(!avoid)
       {     
-//if(mono_list[nn].calculate_distance_sq(&mono_list[mm],PREVIOUS) < 1.)
-//fprintf(stderr, "%i %i m1 %g %g %g m2 %g %g %g\n", nn, mm, mono_list[nn].get_pos(0),mono_list[nn].get_pos(1), mono_list[nn].get_pos(2), mono_list[mm].get_pos(0), mono_list[mm].get_pos(1), mono_list[mm].get_pos(2));
        (mono_list[nn]).sys_force(&mono_list[mm]);
-//if(mono_list[nn].calculate_distance_sq(&mono_list[mm],PREVIOUS) < 1.)
-//fprintf(stderr, "%i %i m1 %g %g %g m2 %g %g %g\n", nn, mm, mono_list[nn].get_pos(0),mono_list[nn].get_pos(1), mono_list[nn].get_pos(2), mono_list[mm].get_pos(0), mono_list[mm].get_pos(1), mono_list[mm].get_pos(2));
 
 
-//no binding//
-//	if(!init)
-//150614: take out binding entirely for now.
-//170510: binding between polymer monos added back in (previous was between polymer and shell) and only for "binding monos"
-// 	if((mono_list[nn].get_binding_mono())||(mono_list[mm].get_binding_mono()))
-//	if(((nn >= NUMBER_IN_POLYMER)&&(mm<NUMBER_IN_POLYMER))||((mm >= NUMBER_IN_POLYMER)&&(nn<NUMBER_IN_POLYMER)))
 	if((nn < NUMBER_IN_POLYMER)&&(mm<NUMBER_IN_POLYMER))
 		binding_func(nn, mm);
  

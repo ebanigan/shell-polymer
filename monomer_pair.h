@@ -45,7 +45,7 @@ more efficient than calculating each as needed (which would be more than once).*
          nearest_neighbors = true;
        else
          nearest_neighbors = false;
-       //interaction strength -- may be different, e.g., when comparing a crosslink pair to a ParA filament pair
+       //interaction strength -- may be different, e.g., when comparing a crosslink pair to a polymer backbone pair
        bond_strength = bond;
        bend_strength = bend;
        orient_strength = polarize;
@@ -165,7 +165,6 @@ potential. */
            prefactor2 = (*second).get_tdiffusion_coeff()*dt*bend_strength*(COS_F_ANGLE - cos_angle);
            prefactor3 = (*((*pair_ij).first)).get_tdiffusion_coeff()*dt*bend_strength*(COS_F_ANGLE - cos_angle);
 
-         //for details about the bending force, see analytics notes from 7/4/08
          for(ll = 0; ll < DIMENSION; ll++)
          {
            bend_move_i[ll] = -1.*(rkj[ll])*rji_times_rkj + cos_angle*(rji[ll])*rkjmag2;
@@ -297,12 +296,9 @@ void crosslink_potential()
 
 
 /*
- * Define RANDOM_SIDE_BIND_SITES to determine whether or not there is any ordering to the locations of side binding sites.
- * If SIDE_BIND_RING is false, then these will be called in filament_interactions() if RANDOM_SIDE_BIND_SITES is false.
- *
- * This potential, coupled with the orientation_potential() called when SIDE_BINDING_RING is false, are sufficient to identify a 
- * distinct, preferred location on the monomer for a binding site.  When this potential is absent, while there will still be a 
- * single binding site, given by the polarization vector, the site will diffuse freely in the ring perpendicular to the bond vector.
+ * This potential, coupled with the orientation_potential(), is sufficient to identify a 
+ * distinct, preferred location on the monomer, e.g. for a binding site.  When this potential is absent, while there will still be a 
+ * single (binding) site, given by the polarization vector, the site will diffuse freely in the ring perpendicular to the bond vector.
  * */
 
 /*

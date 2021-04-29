@@ -1,4 +1,6 @@
 #include<vector>
+//function prototypes
+
 using namespace std;
 
 extern double ranf0(); //rand # gen (uniform, 0 to 1)
@@ -30,7 +32,6 @@ extern void set_pipette_position();
 
 extern void update_system(long);
 
-//extern void actin_event_loop2(); //runs through possible actin events
 extern void filament_interactions();
 
 void write_state_to_pdb(unsigned long long);
@@ -41,9 +42,6 @@ extern void create_cylinder();
 extern void connect_shell_poly();
 extern void relax_crosslinks(double);
 extern void update_att_times();
-
-extern void actin_crosslink();
-extern void remove_extra_actin();
 
 
 extern void binding(int, int);

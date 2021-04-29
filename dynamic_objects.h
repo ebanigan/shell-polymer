@@ -71,7 +71,6 @@ class dynamic_object{
         virtual void rotational_brownian_move();
         virtual void translational_brownian_move();
         //virtual void sys_force(void) =0;
-        //virtual void sys_torque(void) = 0;     
              
 //functions return positions and orientations
         double get_pos(int dd){return pos[dd];}
@@ -304,7 +303,7 @@ double get_load_rest_length(){return load_rest_length;}
           {
               pos[kk] += tdiff_stdev * gaussian_inverf(step);//gaussian_rand();//gaussian_std();
           }
-        }//want ParA to have higher drag. use "<" instead of "==" because these are doubles not longs... don't want weird numerical errors.
+        }//may want some monos to have higher drag. use "<" instead of "==" because these are doubles not longs... don't want weird numerical errors.
 
 
 /*Rotates the monomer randomly with angle from gaussian distribution. In 3d, rotation is about axis chosen
@@ -314,13 +313,11 @@ from a uniform distribution. In 2d, rotation is about center of monomer. Does no
      2.translate to alpha, phi
      3.apply rotation
      4.renormalize polarization vector (eliminate numerical error)*/
-        //void rotational_brownian_move();
+     //void rotational_brownian_move();
 
 
 //adds systematic forces, for ex. a soft repulsion, adjusts position accordingly
         void sys_force(dynamic_monomer *mono);
-//systematic torques -- adjusts orientation accordingly
-        void sys_torque(dynamic_monomer *mono);
 
         double harmonic_repulsion(dynamic_monomer *mono, double separation2, int dd);
 
@@ -332,7 +329,7 @@ from a uniform distribution. In 2d, rotation is about center of monomer. Does no
       
 
         //calculates angle between two bonds
-        //no func to calc angle between orientation and bond... see notes.txt 7/11/08 for reason
+        //no func to calc angle between orientation and bond
         double calculate_cosbond_angle(dynamic_monomer *minusptr, dynamic_monomer *second_mono);
         
 };
