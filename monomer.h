@@ -35,7 +35,6 @@ class monomer{
       //boolean flags to indicate states of monomer
       bool plus_is_polymerized;
       bool minus_is_polymerized;
-      bool plus_is_capped;
       bool crosslinked;
       bool shell_poly_link;
 
@@ -90,9 +89,8 @@ class monomer{
 Also makes appropriate changes to pointers and rates.*/
       void polymerize(monomer *mono2);
   
-/*If rand# < denuc prob, this function is cuts the connection between two monomers 
-by setting the appropriate plus/minus pointers to NULL.  Also, this will make appropriate
-adjustments to nucleation, capping, etc. probabilities.*/
+/*If rand# < depol prob, this function is cuts the connection between two monomers 
+by setting the appropriate plus/minus pointers to NULL. add adjustments to other rates here if needed.*/
       int depolymerize();
 
 

@@ -53,7 +53,7 @@ for(kk = 0; kk < DIMENSION; kk++)
   center_mass_pos[kk] = total[kk]/NUMBER_IN_POLYMER;
 
 #if PRINT_CM_ONLY            
-     sprintf(filename, "output/parb_dna_move%6.6i", TRIALNUMBER);
+     sprintf(filename, "output/polymer_move%6.6i", TRIALNUMBER);
     
      if(step == 0)
       outfile = fopen(filename, "w");

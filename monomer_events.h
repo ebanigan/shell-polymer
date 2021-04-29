@@ -22,7 +22,7 @@ int monomer::depolymerize()
 double rrr = ranf5();//unif_rand();
 
    if(rrr < depolymerize_prob)
-   { /*note that this is okay, because depolymerize_prob = 0 unless nucleation has occured!*/
+   { /*note that this is okay, because depolymerize_prob = 0 unless polymerization has occured*/
        //Change minus' plus pointer & bool, wait until end to change this' minus ptr 
        (*minus).plus = NULL;
        (*minus).plus_is_polymerized = false;

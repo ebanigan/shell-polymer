@@ -15,7 +15,6 @@
 #include "compress.cpp"
 #include "filament_interactions.cpp"
 #include "create_polymer.cpp"
-#include "restart.cpp"
 #include "initialize_sim.cpp"
 #include "print_final_config.cpp"
 #include "print_stresses.cpp"
@@ -73,7 +72,7 @@ double pipette_dist_from_center;
 unsigned long long cl_numsteps;
 int cl_trialnumber;
 double cl_lx, cl_ly;
-double cl_parb_stiffness;
+double cl_polymer_stiffness;
 double cl_f_load;
 bool cl_length_controlled_load;
 double cl_pipette_stiffness, cl_pipette_velocity;
@@ -88,7 +87,7 @@ bool cl_solid_interior;
 double cl_springconst;
 bool cl_springs_only, cl_extensional_springs_only;
 bool cl_variable_bond_length, cl_modified_shell_exc_vol;
-int cl_number_of_parb_dna, cl_num_shell_monos;
+int cl_number_in_polymer, cl_num_shell_monos;
 double cl_crosslink_spring_factor;
 double cl_crosslink_density, cl_polymer_cut_percentage; 
 int cl_number_of_shell_poly_connections;
@@ -97,7 +96,7 @@ double cl_load_frac;
 double cl_polymer_mono_rad, cl_shell_mono_rad;
 bool cl_print_lammps;
 double cl_kt, cl_new_kt, cl_dt, cl_polymer_tdiff_coeff_factor;
-bool cl_restart, cl_pdb;
+bool cl_pdb;
 bool cl_lowt_protocol, cl_box_resize, cl_extended_relaxation;
 bool cl_cylinder;
 double cl_cylinder_length;
@@ -132,8 +131,8 @@ initialize_cl();
 
 int option;
 //remaining options are
-//eJ
-while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v:C:F:w:p:y:d:q:g:h:X:R:Z:A:B:W:Y:O:D:E:Q:m:G:H:i:K:j:U:I:")) != -1)
+//eJR
+while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v:C:F:w:p:y:d:q:g:h:X:Z:A:B:W:Y:O:D:E:Q:m:G:H:i:K:j:U:I:")) != -1)
 {
  switch(option)
  {
@@ -144,7 +143,7 @@ while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v
   case 'x':
     cl_lx = atof(optarg); break;
   case 's': 
-    cl_parb_stiffness = atof(optarg); break;
+    cl_polymer_stiffness = atof(optarg); break;
   case 'f':
     cl_f_load = atof(optarg); break;
   case 'F':
@@ -192,7 +191,7 @@ while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v
   case 'v':
 	cl_polymer_exc_vol_spring = atof(optarg); break;
   case 'N':
-	cl_number_of_parb_dna = atoi(optarg); break;
+	cl_number_in_polymer = atoi(optarg); break;
   case 'M':
 	cl_num_shell_monos = atoi(optarg); break;
   case 'T':
@@ -236,10 +235,6 @@ while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v
   case 'X':
 	if(atoi(optarg) == 1)
 	  cl_modified_shell_exc_vol = true;
-	break;
-  case 'R':
-	if(atoi(optarg) == 1)
-	   cl_restart = true;
 	break;
   case 'B':
 	if(atoi(optarg) == 1)
@@ -306,7 +301,6 @@ while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v
 	fprintf(stderr, "thermal noise -T\n");
 	fprintf(stderr, "kT -y\n");
 	fprintf(stderr, "polymer diff coeff factor -Z\n");
-	fprintf(stderr, "restart -R\n");
 	fprintf(stderr, "use modified excluded volume scheme -X\n");
 	fprintf(stderr, "pipette stiffness -g\n");
 	fprintf(stderr, "pipette velocity -h\n");
@@ -326,10 +320,7 @@ fprintf(stderr, "Options chosen: t %i z %i r %g b %g f %g x %g\n", cl_trialnumbe
    long nn;
 
  
-   if(RESTART)
-     read_restart();
-   else
-     initialize_sim();  //initialize random number generator, sets id #'s for monomers, lots of other stuff 
+   initialize_sim();  //initialize random number generator, sets id #'s for monomers, lots of other stuff 
 
 int dummy;
 
@@ -342,7 +333,7 @@ int dummy;
   sprintf(cpcommand, "cp /tmp/[frsy][oapl]*%6.6i output/", TRIALNUMBER);
   sprintf(mvcommand, "mv /tmp/[frsy][oapl]*%6.6i output/", TRIALNUMBER);
 
-if((!RESTART) && LOWT_PROTOCOL)
+if(LOWT_PROTOCOL)
 {
 bool LOW_TEMPERATURE_PROTOCOL;
 if(KT < 0.5)
@@ -414,7 +405,7 @@ for(ii = 0; ii < NUMBER_OF_MONOMERS; ii++)
 		fprintf(stderr, "low temp protocol not written for springs only system. continuing\n");
 	}
 }//if(LOW_TEMPERATURE_PROTOCOL || CALC_MODULI)
-}//!RESTART && LOWT_PROTOCOL
+}//LOWT_PROTOCOL
 
 
 if(HYSTERESIS)
@@ -444,8 +435,6 @@ if(ii%PDB_SKIP == 0)
     write_state_to_pdb(ii);
 */
 
-     if((ii%500000 == 0) && (ii != 0))
-      write_restart(ii);
    }//for loop over numstep/2 steps
 
 cl_kt = cl_new_kt;
@@ -545,7 +534,6 @@ if((TRIALNUMBER%11 == 0) || (TRIALNUMBER > 999990) || ((TRIALNUMBER > 28435) && 
 
    if((ii%200000 == 0) && (ii != 0))
    {
-    write_restart(ii);
     dummy= system(cpcommand);
    }
 
@@ -555,9 +543,6 @@ if((TRIALNUMBER%11 == 0) || (TRIALNUMBER > 999990) || ((TRIALNUMBER > 28435) && 
 //if I uncomment this, make sure to remove setting of x0 after the transient
    //print_final_config();
 
-   #if WRITE
-   write_restart(ii);
-   #endif
    fclose(extfile);
    #if PRINT_SHELL_SPRING
    fclose(springfile);

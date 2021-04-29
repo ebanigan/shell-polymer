@@ -163,9 +163,6 @@ class dynamic_monomer:public monomer, public dynamic_object{
  * nextnn_pair_num2 is the id of the next nearest neighbor monomer_pair in which monomer is second.  applicable when there is an interaction between polarization vectors
  */
 		
-	//only for use with parb-dna polymer
-	long parb_bindsite_id;
-
 
         bool update_bool;//tells sim whether or not to update this mono
 
@@ -189,15 +186,6 @@ class dynamic_monomer:public monomer, public dynamic_object{
         void decrement_nextnn_pair_num2(){nextnn_pair_num2--;}
 
 		
-	//next 3 only for use with parb-dna polymer
-	bool parb_bindsite;
-	void add_parb_bindsite(long nn)
-	{
-	  parb_bindsite = true;
-	  parb_bindsite_id = nn;
-	}
-	long get_parb_bindsite_id(){return parb_bindsite_id;}
-		  
 
 //default constructor
 dynamic_monomer(){}
@@ -215,19 +203,16 @@ dynamic_monomer(long num, double invdrag)
         shell_poly_link = false;
         id = num;
         update_bool = true;
-	parb_bindsite_id = -1;
         pair_num2 = -1;
 	crosslink_num = -1;
         nextnn_pair_num2 = -1;
-        denucleate_prob = 0.;
+        depolymerize_prob = 0.;
         
         plus = NULL;
         minus = NULL;
-        plus_is_nucleated = false;
-        minus_is_nucleated = false;
+        plus_is_polymerized = false;
+        minus_is_polymerized = false;
 		
-	parb_bindsite = false;
-
 	load_mono = false;
 	sign_load = 0.; 
  	binding_mono = false;
@@ -350,15 +335,6 @@ from a uniform distribution. In 2d, rotation is about center of monomer. Does no
         //no func to calc angle between orientation and bond... see notes.txt 7/11/08 for reason
         double calculate_cosbond_angle(dynamic_monomer *minusptr, dynamic_monomer *second_mono);
         
-//subroutines return bools for whether or not monomers can polymerize
-/*Returns true or false (to actin_event_loop) indicating that mono2 is close enough to this monomer to interact.
-Also, proximity returns false if mono2 is at a distance less than diameter - dr away*/
-        bool proximity(dynamic_monomer *mono2);  
-/*checks rotatational orientation of incoming monomer against angle of (currently unformed) bond vector (bet/ incoming and fil.)
-bool for_a_branch handles branching condition- true if branching, false if elongating*/
-        bool orientation(dynamic_monomer *mono2);
-/*Checks angle between already established bond vector at barbed end and about to be established bond vector*/
-        bool incoming_angle(dynamic_monomer *incoming_mono, dynamic_monomer *minus_mono, bool for_a_branch);       
 };
 
 

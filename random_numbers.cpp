@@ -194,7 +194,7 @@ double gaussian2()
           return gaussian2();
 }
 
-//heavy parb trans brownian
+//heavy polymer mono trans brownian
 double gaussian3()
 {      
        double y, py, ptest;      
@@ -238,7 +238,7 @@ return iseed5/rc;
 }//end of ranf5()
 
 
-//gaussian random number generator for heavy parb rotation
+//gaussian random number generator for heavy polymer mono rotation
 double gaussian6()
 {
        double y, py, ptest;

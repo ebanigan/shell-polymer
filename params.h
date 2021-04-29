@@ -51,8 +51,6 @@ using namespace boost::math;
 
 #define TRIALNUMBER cl_trialnumber
 #define rseed cl_rseed//419//random # seed
-#define WRITE true
-#define RESTART cl_restart
 
 #define LOAD false
 
@@ -74,9 +72,6 @@ using namespace boost::math;
 #define SOLID_INTERIOR cl_solid_interior
 
 #define NUMBER_OF_MONOMERS (num_shell_monos+NUMBER_IN_POLYMER)//total number of "monomer" objects in the system
-#define INITIALIZE_DIMERS true 
-/*Set to true to initialize the system with dimers. 
-If set to false, spontaneous nucleation is allowed*/
 
 #define BOOK_KEEPING_TEST true//set to true to run book_keeping_tests() -- need this true to run number_free()
 #define PRINT_NUM_IN_FIL true//set to true if want to print #monos in filaments (instead of free + or - ends) to file
@@ -129,20 +124,9 @@ If set to false, spontaneous nucleation is allowed*/
 #define PIPETTE_STIFFNESS cl_pipette_stiffness
 #define PIPETTE_VELOCITY cl_pipette_velocity
 
-/*#define V0 0.
-#define W0 0.*/
-
-//parameters for geometric constraints for polymerization and interactions within filaments
-//all but "orientation_cutoff" are taken from Lee and Liu (2008)
-#define MIN_DIST_FOR_POLYM (0.9*MONO_DIAM)// = MONO_DIAM - 0.1*MONO_DIAM
-#define MIN_DIST_FOR_POLYM_SQ (MIN_DIST_FOR_POLYM*MIN_DIST_FOR_POLYM)
+//geometric constraints for interactions within filaments
 #define FIL_ANGLE 0.
-#define BRANCH_ANGLE (PI*70./180.)
-//allows up to ~11.5degrees difference for filaments and ~68.8-71.2 for branches
-#define INCOMING_ANGLE_CUTOFF 0.06//not actually an angle cutoff... a cut off for difference bet/ costheta and costheta0
-#define ORIENTATION_CUTOFF 0.10//consider 0.1 but be aware that PE/force discontinuity is larger...
 #define COS_F_ANGLE (cos(FIL_ANGLE))
-#define COS_B_ANGLE (cos(BRANCH_ANGLE))
 
 
 #define unif_rand() (RNUM1.get_double())//(ranf0()) // ((double) rand()/RAND_MAX) //uniform random number generator
@@ -190,9 +174,6 @@ See, for ex., Einstein's Investigations on the Theory of Brownian Motion*/
 #define CURRENT false
 #define PREVIOUS (!CURRENT)
 
-//for dynamic_monomer function dynamical_interact()
-#define FORM_BRANCH true
-#define NOT_BRANCH (!FORM_BRANCH)
 
 #define PI 3.141592653589793
 #define TWOPI 6.283185307179586
@@ -203,7 +184,7 @@ See, for ex., Einstein's Investigations on the Theory of Brownian Motion*/
 
 
 /***********************************************************************************************************************************/
-#define NUMBER_IN_POLYMER cl_number_of_parb_dna//0//360//0//100
+#define NUMBER_IN_POLYMER cl_number_in_polymer
 #define NUMBER_OF_FILAMENTS 0
 #define NUMBER_OF_SHELL_POLY_CONNECTIONS cl_number_of_shell_poly_connections
 #define CROSSLINK_DENSITY cl_crosslink_density
@@ -218,15 +199,9 @@ See, for ex., Einstein's Investigations on the Theory of Brownian Motion*/
 #define CROSSLINK_LENGTH (1.2*MONO_DIAM)
 #define CROSSLINK_LENGTH2 (CROSSLINK_LENGTH*CROSSLINK_LENGTH)
 
-#define PARB_STIFFNESS cl_parb_stiffness//100.
+#define POLYMER_STIFFNESS cl_polymer_stiffness//100.
 
 #define CROSSLINK true //crosslink the bundle
-
-#define PARB_STICKS_NEAR_POLE false//if true, Parb sticks after it passes PARB_STICKING_PLANE
-#define PARB_STICKING_PLANE (75.*MONO_DIAM)
-#define PARB_DOES_NOT_BIND_AFTER_STICKING false
-
-
 
 #define PRINT_CM_ONLY false
 #define PRINT_RGYR true
@@ -239,14 +214,13 @@ See, for ex., Einstein's Investigations on the Theory of Brownian Motion*/
 #define NEXT_NN_POLARIZATION_INT (0.*NN_POLARIZATION_INT)//strength of interaction between polarizations of next nearest neighbors
 #define SIDE_ANGLE HALFPI//preferred angle between bond vector and polarization vector
 #define COS_SIDE_ANGLE cos(SIDE_ANGLE)
-#define COS_HALFPI_PLUS_B_ANGLE cos(BRANCH_ANGLE + HALFPI)//bind site will be oppposite branch
 #define POL_ANGLE (PI*10./180.)//Alternatively, this could be defined as TWOPI/PITCH, if we define PITCH to be the number of monomers for the preferred polarization to rotate 2pi
 #define COS_POL_ANGLE cos(POL_ANGLE)//preferred angle between nearest neighbor polarizations
 #define COS_TWO_POL_ANGLE cos(2.*POL_ANGLE)//aka preferred angle between next nearest neighbor polarizations.
 
-//variables for side binding sites on ParB
-#define PARB_POLARIZABILITY 0.//(25.*KT)
-#define PARB_NN_POLARIZATION_INT 0.//(50.*KT)
+//variables for polarization vectors on polymers (in case we want special sites, e.g. binding sites)
+#define POLYMER_POLARIZABILITY 0.//(25.*KT)
+#define POLYMER_NN_POLARIZATION_INT 0.//(50.*KT)
 
 
 

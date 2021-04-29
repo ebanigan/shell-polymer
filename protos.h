@@ -16,9 +16,6 @@ extern double gaussian_std();
 extern double gaussian_inverf(unsigned long long);
 
 
-extern void write_restart(unsigned long long);
-extern void read_restart();
-
 extern void initialize_sim(); //initializes rand # gen, system, etc.
 extern void initial_dynamics();
 extern void initialize_system_params();

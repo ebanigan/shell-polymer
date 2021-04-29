@@ -1,5 +1,7 @@
 #include "params.h"
 
+//global variables
+
 extern int iseed0, iseed1, iseed2, iseed3, iseed4, iseed5, iseed6; //random # seed
 extern double gauss_prefact1, gauss_exp_const1, gauss_range1;
 extern double gauss_prefact2, gauss_exp_const2, gauss_range2;
@@ -15,7 +17,7 @@ extern int indentation1, indentation2;
 
 extern int cl_trialnumber;
 extern double cl_lx, cl_ly;
-extern double cl_parb_stiffness;
+extern double cl_polymer_stiffness;
 extern double cl_f_load;
 extern bool cl_length_controlled_load;
 extern double cl_pipette_stiffness, cl_pipette_velocity;
@@ -29,7 +31,7 @@ extern double cl_os_pressure;
 extern bool cl_solid_interior;
 extern double cl_springconst, cl_shell_bond_spring, cl_polymer_exc_vol_spring;
 extern bool cl_variable_bond_length, cl_modified_shell_exc_vol;
-extern int cl_number_of_parb_dna, cl_num_shell_monos;
+extern int cl_number_in_polymer, cl_num_shell_monos;
 extern unsigned long long cl_numsteps;
 extern double cl_crosslink_density, cl_polymer_cut_percentage;
 extern int cl_number_of_shell_poly_connections;
@@ -39,7 +41,7 @@ extern double cl_load_frac;
 extern double cl_polymer_mono_rad, cl_shell_mono_rad;
 extern bool cl_print_lammps;
 extern double cl_kt, cl_new_kt, cl_dt, cl_polymer_tdiff_coeff_factor;
-extern bool cl_restart, cl_pdb;
+extern bool cl_pdb;
 
 extern bool cl_lowt_protocol, cl_box_resize, cl_extended_relaxation, cl_calc_moduli;
 

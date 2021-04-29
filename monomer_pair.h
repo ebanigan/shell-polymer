@@ -7,8 +7,8 @@
 
 /*
 monomer_pair is an object composed of two pointers to monomer. These monomers
-are connected to each other in a filament or branch.  In this way, the simulation
-keeps track of every pairwise filament/branch interaction.
+are connected to each other in a polymer/network.  In this way, the simulation
+keeps track of every pairwise polymer/network bond interaction.
 */
 
 class monomer_pair{
@@ -26,42 +26,31 @@ more efficient than calculating each as needed (which would be more than once).*
 	double bond_length;  
   public:    
     //ids of monomers in pair
-    //7/15/08- changed type from dynamic_monomer to monomer to maintain greater generality
-    //later -- can't do that because first and second use dynamic_monomer member functions
-    dynamic_monomer *first;//first monomer's plus or branch pointer points to second monomer
+    dynamic_monomer *first;//first monomer's plus pointer points to second monomer
     dynamic_monomer *second;//second monomer's minus points to first monomer
     
-    bool branch_base;//if "pair" connection is at a branch base, this is true
-    bool crosslink;
     bool nearest_neighbors;//needed to determine preferred angle in polarization_interaction()
-    bool parb_pair;
-/*
-    bool pointed_end;
-    bool barbed_end;
-*/
+    bool polymer_pair;//indicates whether pair is for the interior polymer or not
 
     //monomer_pair(){}
     //constructor
-    //parb?
-    monomer_pair(dynamic_monomer *mono1, dynamic_monomer *mono2, bool branching, bool parb, double bond, double bend, double polarize, double nn_pol)
+    monomer_pair(dynamic_monomer *mono1, dynamic_monomer *mono2, bool polymer, double bond, double bend, double polarize, double nn_pol)
     {
        int kk;
        
        first = mono1;
        second = mono2;
-       crosslink = branching;//when ACTIN_TAIL is false THE POSSIBILITY OF BRANCHING IS REPLACED WITH THE POSSIBILITY OF CROSSLINKING
-//set nearest_neighbors bool
+       //set nearest_neighbors bool
        if((*second).minus_points_to() == (*first).get_id())
          nearest_neighbors = true;
        else
          nearest_neighbors = false;
-//interaction strength -- may be different, e.g., when comparing a crosslink pair to a ParA filament pair
+       //interaction strength -- may be different, e.g., when comparing a crosslink pair to a ParA filament pair
        bond_strength = bond;
-       //fprintf(stderr, "%g\n", bond_strength);
        bend_strength = bend;
        orient_strength = polarize;
        nn_orient_strength = nn_pol;
-       parb_pair = parb;
+       polymer_pair = polymer;
 
 	update_relative_positions();
 
@@ -87,8 +76,7 @@ more efficient than calculating each as needed (which would be more than once).*
        inv_separation = 1./separation;
     }
 
-    bool get_branch_base(){return branch_base;}
-    bool get_parb_pair(){return parb_pair;}
+    bool get_polymer_pair(){return polymer_pair;}
     double get_bond_length(){return bond_length;}
     void set_bond_length(double input){bond_length = input;}
     double get_bond_strength(){return bond_strength;}
@@ -145,14 +133,14 @@ more efficient than calculating each as needed (which would be more than once).*
 
 #if (DIMENSION != 1)
 /*Function for moving monomers based on angle between bond vectors (bending).  
-This bend potential will work in 2D and 3D.  There are different theta0's (0 and
-70 degrees) for a regular filament interaction and a base of a branch (y-junction?)
+This bend potential will work in 2D and 3D.  There could be different theta0's 
+for polymer bond interactions if we want.
 interaction. For more information, see D.C. Rapaport (2004) p. 284 -- "bond angle" 
-potential. Also, see analytics notes from 7/4/08.*/
+potential. */
     void bending_potential(monomer_pair *pair_ij)
     {
          int ll;       
-         double cos_angle;//faster to not use this:// = (*first).calculate_cosbond_angle(first_minusptr, second);
+         double cos_angle;
          double rkj[DIMENSION], rji[DIMENSION];
          double rkjmag2= separation2;
          double rjimag2= (*pair_ij).get_separation2();
@@ -196,12 +184,11 @@ potential. Also, see analytics notes from 7/4/08.*/
          (*((*pair_ij).first)).move(bend_move_i);
          (*first).move(bend_move_j);
          (*second).move(bend_move_k);
-    }//end of bending_potential(), which is dependent on branch_base
+    }//end of bending_potential()
 
 
 /*Rotates monomers according to angle between polarization vector and (1 or 2) nearest bond vectors.
-Uses potential = .5*K*(costheta - costheta0)^2.  See analytics notes from 7/10/08 for details.
-Fixing the orientation potential: see written notes 9/22/08
+Uses potential = .5*K*(costheta - costheta0)^2.
 */
     void orientation_potential()
     {
@@ -221,10 +208,7 @@ Fixing the orientation potential: see written notes 9/22/08
          double t_prefactor2 = orient_strength*((*second).get_tdiffusion_coeff())*dt;//not used below
          double temp1, temp2;
          
-         //For a filament, polarizations line up with bond vectors. For a branch base, 
-         //polarization of the second monomer lines up with the bond vector, but 
-         //polarization of the first monomer should be at a 70 degree angle with the
-         //bond vector.
+         //polarizations line up with bond vectors. 
           costheta0_1 = COS_F_ANGLE;
           costheta0_2 = costheta0_1;
 
@@ -372,7 +356,7 @@ void polarization_interaction()
 };
 
 
-extern vector<monomer_pair> pairs;//ParA filament or branch pairs
+extern vector<monomer_pair> pairs;//polymer bonds in backbone of polymer
 extern vector<monomer_pair> crosslinkpairs;
 
 

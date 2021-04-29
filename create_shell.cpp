@@ -151,16 +151,11 @@ double shellspringconst;
 	                  shellspringconst = LDEP_FACTOR*SHELL_BOND_SPRING;
                   else if(shellspringconst < SHELL_BOND_SPRING/LDEP_FACTOR)
                           shellspringconst = SHELL_BOND_SPRING/LDEP_FACTOR;
-//	fprintf(stderr, "add bond going to choose spring const %g\n", shellspringconst);
-
         }
 
-
         //pairing.
-        monomer_pair temp_obj(&mono_list[ii+NUMBER_IN_POLYMER], &mono_list[jj+NUMBER_IN_POLYMER], NOT_BRANCH, false, shellspringconst, 0., 0., 0.);
-//        mono_list[jj+NUMBER_IN_POLYMER].set_pair_num2(pairs.size());//again, don't bother
+        monomer_pair temp_obj(&mono_list[ii+NUMBER_IN_POLYMER], &mono_list[jj+NUMBER_IN_POLYMER], false, shellspringconst, 0., 0., 0.);
         pairs.push_back(temp_obj);
-
 }
 
 
@@ -176,9 +171,6 @@ double shellspringconst;
                         shellspringconst = LDEP_FACTOR*SHELL_BOND_SPRING;
                 else if(shellspringconst < SHELL_BOND_SPRING/LDEP_FACTOR)
                         shellspringconst = SHELL_BOND_SPRING/LDEP_FACTOR;
-
-//        fprintf(stderr, "choose shell going to choose spring const %g\n", shellspringconst);
-
         }
 return shellspringconst;
 }
@@ -237,9 +229,7 @@ if(num_attachments[jj-NUMBER_IN_POLYMER] < UPPER_BOUND_CONNECTIVITY)//also check
         //pairing.
         shellspringconst = choose_shell_spring_const(sqrt(mono_list[ii].calculate_distance_sq(&mono_list[jj], PREVIOUS)));
 
-	//fprintf(stderr, "feeding %g into spring\n", shellspringconst);
-	monomer_pair temp_obj(&mono_list[ii], &mono_list[jj], NOT_BRANCH, false, shellspringconst, 0., 0., 0.);
-	//mono_list[jj].set_pair_num2(pairs.size()); // don't bother because many monos will be in multiple pairs
+	monomer_pair temp_obj(&mono_list[ii], &mono_list[jj], false, shellspringconst, 0., 0., 0.);
 	pairs.push_back(temp_obj);
 }//force num attached to be less than UPPER_BOUND_CONNECTIVITY
 }//if not already attached
@@ -247,23 +237,15 @@ if(num_attachments[jj-NUMBER_IN_POLYMER] < UPPER_BOUND_CONNECTIVITY)//also check
 }//if dist is right, again
 }
 
-//fprintf(stderr, "%i, %g\n", ii, bonddist);
-/*if(bonddist > SHELL_RADIUS)
-    fprintf(stderr, "bonddist larger than SHELL_RADIUS = %g\n", SHELL_RADIUS);
-  else if(bonddist > 2.00)
-    fprintf(stderr, "bonddist is now larger than 2\n");*/
 prev_bonddist = bonddist;
 if(!(SPRINGS_ONLY || VARIABLE_BOND_LENGTH))
  bonddist = bonddist + 0.1;
 else
  bonddist = bonddist + 0.075*sqrt(4.*PI*SHELL_RADIUS*SHELL_RADIUS / num_shell_monos);
-/*if(bonddist > 10.){  //fprintf(stderr, "bonddist for shell is larger than 10!\n"); exit(1);}*/
 }//while
 }//for(ii
 fprintf(stderr, "\n");
 
-//fflush(bondfile);
-//fclose(bondfile);
 
 /*Now check to see that all pieces of shell are attached*/
 bool connected = false;

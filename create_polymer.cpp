@@ -35,7 +35,7 @@ if(NUMBER_IN_POLYMER > 1)
 	mono_list[1].set_prev_pos();
 
 	(mono_list[0]).polymerize(&mono_list[1]);//so mono 0 should be the minus end of the polymer
-	monomer_pair temp_pair(&mono_list[0], &mono_list[1], NOT_BRANCH, true, BOND_SPRING, PARB_STIFFNESS, PARB_POLARIZABILITY, PARB_NN_POLARIZATION_INT);
+	monomer_pair temp_pair(&mono_list[0], &mono_list[1], true, BOND_SPRING, POLYMER_STIFFNESS, POLYMER_POLARIZABILITY, POLYMER_NN_POLARIZATION_INT);
         (mono_list[1]).set_pair_num2(pairs.size());
 	pairs.push_back(temp_pair);
 }	 
@@ -98,7 +98,7 @@ while((next_pos[0]-0.5*LX)*(next_pos[0]-0.5*LX)*xfactor + (next_pos[1]-0.5*LY)*(
         mono_list[ii+1].set_prev_pos();
 
          (mono_list[ii]).polymerize(&mono_list[ii+1]);
-         monomer_pair tempobj(&mono_list[ii], &mono_list[ii+1], NOT_BRANCH, true, BOND_SPRING, PARB_STIFFNESS, PARB_POLARIZABILITY, PARB_NN_POLARIZATION_INT);
+         monomer_pair tempobj(&mono_list[ii], &mono_list[ii+1], true, BOND_SPRING, POLYMER_STIFFNESS, POLYMER_POLARIZABILITY, POLYMER_NN_POLARIZATION_INT);
 	 (mono_list[ii+1]).set_pair_num2(pairs.size());
          pairs.push_back(tempobj);
        } // ii != NUMBER_IN_POLYMER-1
@@ -154,24 +154,6 @@ for(ii = 0; ii < NUMBER_OF_CROSSLINKS; ii++)
 
 	if(!mono_list[jj].get_crosslinked())
 	{
-/*
-//crosslinking scheme based on initial distance in linear polymer
-//seems to produce too many small loops
-		for(kk = 0; kk < NUMBER_IN_POLYMER; kk++)
-		{
-		   if((kk < jj-4) || (kk > jj+4))
-		   if(!mono_list[kk].get_crosslinked())
-		   {
-			temp = mono_list[jj].calculate_distance_sq(&mono_list[kk], PREVIOUS);
-			if(temp < linkdist2)
-			{
-//			fprintf(stderr, "%g %g %i %i\n", temp, linkdist2, jj, kk);
-			  linkdist2 = temp;
-			  linkmono = kk;
-			}
-		   }
-		}//for(kk
-*/
 		crosslink_created = false;
 		while(!crosslink_created)
 		{
@@ -183,7 +165,7 @@ for(ii = 0; ii < NUMBER_OF_CROSSLINKS; ii++)
 			linkmono = kk;
 
 		    fprintf(stderr, "creating crosslinkpair %li %i with bonds stiffness %g\n", jj, linkmono, cl_crosslink_spring_factor*BOND_SPRING);
-		    monomer_pair temp_crosslinkpair(&mono_list[jj], &mono_list[linkmono], NOT_BRANCH, true, cl_crosslink_spring_factor*BOND_SPRING, 0., 0., 0.);
+		    monomer_pair temp_crosslinkpair(&mono_list[jj], &mono_list[linkmono], true, cl_crosslink_spring_factor*BOND_SPRING, 0., 0., 0.);
 		    temp_crosslinkpair.set_bond_length(2.0*cl_polymer_mono_rad);
 		    crosslinkpairs.push_back(temp_crosslinkpair);
 		    mono_list[jj].set_crosslinked(true);

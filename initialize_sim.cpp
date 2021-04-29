@@ -243,7 +243,7 @@ pipette_dist_from_center = 0.;
 //fprintf(stderr, "initializing null binding\n");
 binding_func = &binding_null;
 
-   if(PARB_STIFFNESS < 1.e-5)
+   if(POLYMER_STIFFNESS < 1.e-5)
 	bending_func = &bending_null;
    else
 	bending_func = &bending;
@@ -263,7 +263,7 @@ void initialize_cl()
 {
 	cl_trialnumber = 999999;
 	cl_lx = 50.;
-	cl_parb_stiffness = 0.;
+	cl_polymer_stiffness = 0.;
 	cl_f_load = 0.;
 	cl_length_controlled_load = false;
 	cl_pipette_stiffness = 100.;
@@ -289,7 +289,7 @@ void initialize_cl()
 	cl_extensional_springs_only = false;
 	cl_variable_bond_length = true;
 	cl_modified_shell_exc_vol = false;
-	cl_number_of_parb_dna = 0;
+	cl_number_in_polymer = 0;
 	cl_num_shell_monos = 200;
 	cl_numsteps = (unsigned long long)20000000+1;
 	cl_crosslink_density = 0.;
@@ -306,7 +306,6 @@ void initialize_cl()
 	cl_kt = 1.0;
 	cl_new_kt = cl_kt;
 	cl_dt = 5.e-4;
-	cl_restart = false; // option R
 	cl_pdb = false;
 	cl_polymer_tdiff_coeff_factor = 1.;
 	cl_hysteresis = false;
