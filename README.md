@@ -1,8 +1,6 @@
 ## Description
 Brownian dynamics code to simulate polymeric shell + interior polymer model of cell nucleus as in Refs [1-3].
 
-Clean up underway for current version of code
-
 *Dependencies*  
 boost C++ library (https://www.boost.org/)
 
