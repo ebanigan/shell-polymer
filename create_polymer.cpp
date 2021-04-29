@@ -2,16 +2,14 @@ void create_polymer()
 {
      long ii,jj,ll;
      int kk;
-	 double initial_pos;
-	 double sum_sq;
-	 double random_displacement[DIMENSION];//used to get random walk for creation of ParB
-         double prev_initial_pos[DIMENSION];
+     double initial_pos;
+     double sum_sq;
+     double random_displacement[DIMENSION];//used to get random walk for creation of ParB
+     double prev_initial_pos[DIMENSION];
+     double total[DIMENSION];
+     double temp_pos;		
 
-//  double total[DIMENSION-1];
-  double total[DIMENSION];
-  double temp_pos;		
-
-	for(kk = 0; kk < DIMENSION; kk++)
+     for(kk = 0; kk < DIMENSION; kk++)
 		prev_initial_pos[kk] = 0.5*L[kk];
 
 	
@@ -19,10 +17,8 @@ void create_polymer()
     for(kk = 0; kk < DIMENSION; kk++)
     {
       (mono_list[0]).set_pos(kk, prev_initial_pos[kk]);
-      (mono_list[0]).check_translational_pbc();//why was I idiotically checking pbc before setting pos? seems unnecessary here too.
+      (mono_list[0]).check_translational_pbc();//seems unnecessary?
     }
-	//seems unnecessary
-	//(mono_list[0]).set_prev_polarization();
 	(mono_list[0]).set_prev_pos();
 
 if(NUMBER_IN_POLYMER > 1)
@@ -40,7 +36,7 @@ if(NUMBER_IN_POLYMER > 1)
 	pairs.push_back(temp_pair);
 }	 
 
-	 //Main part of filament
+//Main part of filament
 for(ii = 1; ii < NUMBER_IN_POLYMER; ii++)//it's okay to count up to NUMBER_IN_POLYMER since I have an if statement buried in the for loop
 {
 double next_pos[DIMENSION];
@@ -67,7 +63,6 @@ while((next_pos[0]-0.5*LX)*(next_pos[0]-0.5*LX)*xfactor + (next_pos[1]-0.5*LY)*(
 	   sum_sq = 0.;
 	   for(kk = 0; kk < DIMENSION; kk++)
 	   {
-//fprintf(stderr, "loop mono %i nextpos %g %g %g\n", ii, next_pos[0], next_pos[1], next_pos[2]);
               random_displacement[kk] = 1.4*(unif_rand() - 0.5)*(2.0*cl_polymer_mono_rad);
               sum_sq += random_displacement[kk]*random_displacement[kk];
 	   }
@@ -86,7 +81,6 @@ while((next_pos[0]-0.5*LX)*(next_pos[0]-0.5*LX)*xfactor + (next_pos[1]-0.5*LY)*(
 
           prev_initial_pos[kk] = initial_pos;
        }//for kk
-//	   (mono_list[ii]).set_prev_polarization();
 	   (mono_list[ii]).set_prev_pos();
        //if monomer is not the last in the filament, polymerize the next one
        if(ii!=NUMBER_IN_POLYMER-1)
@@ -193,8 +187,8 @@ for(ii = 0; ii < NUMBER_OF_CROSSLINKS; ii++)
         double unit_vector[DIMENSION];
         double dist = 0.;
         double disp_vector[DIMENSION];
+        double frac_str;
 
-double frac_str;
 if(NUMBER_IN_POLYMER > 0)
 for(ii = 0; ii < NUM_INIT_POLY_STEPS; ii++)
 {
@@ -234,20 +228,6 @@ if((mono_list[jj].get_pos(0)-0.5*LX)*(mono_list[jj].get_pos(0)-0.5*LX) + (mono_l
 
 update_system(ii);
 }//loop over ii<numinit
-
-/*for(ii = 0; ii < NUMBER_IN_POLYMER; ii++)
-{
-double rad = sqrt((mono_list[ii].get_pos(0) - LX*.5)*(mono_list[ii].get_pos(0) - LX*.5) + (mono_list[ii].get_pos(1) - LY*.5)*(mono_list[ii].get_pos(1) - LY*.5)+(mono_list[ii].get_pos(2) - LZ*.5)*(mono_list[ii].get_pos(2) - LZ*.5));
-fprintf(stderr, "%g %g %g %g\n", mono_list[ii].get_pos(0), mono_list[ii].get_pos(1), mono_list[ii].get_pos(2), rad);
-}*/
-
-/*
-fprintf(stderr, "after poly relax\n");
-for(ii=0; ii < crosslinkpairs.size(); ii++)
-{
-    fprintf(stderr, "%g\n", crosslinkpairs[ii].get_bond_strength());
-}*/
-
 
 }//end of subroutine
 
