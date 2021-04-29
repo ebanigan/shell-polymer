@@ -83,19 +83,6 @@ double dynamic_monomer::harmonic_repulsion(dynamic_monomer *mono, double separat
 }//end harmonic repulsion
 
 
-void dynamic_monomer::sys_torque(dynamic_monomer *mono)
-{
-     double torque= 0.;
-     int kk;
-     for(kk = 0; kk < DIMENSION; kk++)
-     {
-      if(calculate_distance_sq(mono, PREVIOUS) < diam2)
-       torque = 0.;
-
-      polarization[kk] += get_rdiffusion_coeff()*dt*invKT*torque;//?
-     }     
-}//end of sys_torque()
-
 
 
 double dynamic_monomer::calculate_cosbond_angle(dynamic_monomer *minusptr, dynamic_monomer *second_mono)

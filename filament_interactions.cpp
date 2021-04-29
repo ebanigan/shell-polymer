@@ -15,8 +15,6 @@ void filament_interactions()
 
 	for(ii = 0; ii < crosslinkpairs.size(); ii++)
 	{
-                //if(ii==0)
-                     //fprintf(stderr, "cl %g\n", crosslinkpairs[ii].get_bond_strength());
 		crosslinkpairs[ii].bond_potential();
 	}//for loop over crosslink pairs
 }

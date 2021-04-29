@@ -1,7 +1,6 @@
 /*
 This function is responsible for giving monomers a random displacement at each
 time step and for executing any other movements due to systematic forces.
-In addition, this subroutine carries out rotational Brownian motion.
 
 Algorithm: loop over all cells(loop over all monomers in cell(check for and execute interactions))
 */

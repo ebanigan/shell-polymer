@@ -6,7 +6,6 @@
 #include "binding.cpp"
 #include "print_obstacle_pos.cpp"
 #include "print_shell_spring_data.cpp"
-#include "calculate_moduli_variables.cpp"
 #include "create_shell.cpp"
 #include "create_ellipsoid.cpp"
 #include "create_cylinder.cpp"
@@ -66,8 +65,6 @@ int spring_mono_id;
 double spring_att_point[DIMENSION];
 double pipette_dist_from_center;
 
-//rand # test
-//long running_counter;
 
 unsigned long long cl_numsteps;
 int cl_trialnumber;
@@ -101,7 +98,6 @@ bool cl_lowt_protocol, cl_box_resize, cl_extended_relaxation;
 bool cl_cylinder;
 double cl_cylinder_length;
 bool cl_ellipsoid;
-bool cl_calc_moduli;
 bool cl_hysteresis;
 
 bool cl_compress;
@@ -131,8 +127,8 @@ initialize_cl();
 
 int option;
 //remaining options are
-//eJR
-while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v:C:F:w:p:y:d:q:g:h:X:Z:A:B:W:Y:O:D:E:Q:m:G:H:i:K:j:U:I:")) != -1)
+//eHJR
+while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v:C:F:w:p:y:d:q:g:h:X:Z:A:B:W:Y:O:D:E:Q:m:G:i:K:j:U:I:")) != -1)
 {
  switch(option)
  {
@@ -267,10 +263,6 @@ while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v
 	if(atoi(optarg) == 1)
 	 cl_ellipsoid = true;
 	break;
-  case 'H':
-	if(atoi(optarg) == 1)
-	  cl_calc_moduli = true;
-	break;
   case 'K':
 	if(atoi(optarg) == 1)
 	  cl_hysteresis = true;
@@ -312,7 +304,6 @@ while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v
 
 fprintf(stderr, "Options chosen: t %i z %i r %g b %g f %g x %g\n", cl_trialnumber, cl_rseed, cl_shell_radius, cl_bond_spring, cl_f_load, cl_lx); 
 
-//running_counter = 0;
 
    fprintf(stderr, "trial number %i will run for %llu steps.\n", TRIALNUMBER, NUMSTEPS);
    
@@ -322,11 +313,7 @@ fprintf(stderr, "Options chosen: t %i z %i r %g b %g f %g x %g\n", cl_trialnumbe
  
    initialize_sim();  //initialize random number generator, sets id #'s for monomers, lots of other stuff 
 
-int dummy;
-
-//    char command[64];
-//    sprintf(command, "mkdir output/data%6.6i", TRIALNUMBER);
-//    system(command);
+  int dummy;
 
   char cpcommand[128];
   char mvcommand[128];
@@ -341,10 +328,10 @@ if(KT < 0.5)
 else
   LOW_TEMPERATURE_PROTOCOL = false;
 
-//movie
+//make a movie
 //LOW_TEMPERATURE_PROTOCOL = false;
 
-if(LOW_TEMPERATURE_PROTOCOL || CALC_MODULI)//want transient for CALC_MODULI to resize box, set x0
+if(LOW_TEMPERATURE_PROTOCOL)
 {
 vector<vector<double> > avgpos;
 vector<double> temp_xvec(3,0.);
@@ -389,22 +376,13 @@ for(ii = 0; ii < NUMBER_OF_MONOMERS; ii++)
           for(ii = 0; ii < NUMBER_OF_MONOMERS; ii++)
           {
                 mono_list[ii].set_tdiffusion_coeff(TDIFF_COEFF);//everything set to low temp now
-		if(CALC_MODULI)
-		if(ii >= NUMBER_IN_POLYMER)
-		{
-		  for(int kk = 0; kk < DIMENSION; kk++)
-		  {
-		   avgpos[ii][kk] *=  25.*(double)NUMSKIP / (double) num_transient_steps;
-		   mono_list[ii].set_xbar(kk, avgpos[ii][kk]);
-		  }
-		}
 	  }
         }//if(!SPRINGS_ONLY)
 	else
 	{
 		fprintf(stderr, "low temp protocol not written for springs only system. continuing\n");
 	}
-}//if(LOW_TEMPERATURE_PROTOCOL || CALC_MODULI)
+}//if(LOW_TEMPERATURE_PROTOCOL)
 }//LOWT_PROTOCOL
 
 
@@ -514,9 +492,6 @@ if((TRIALNUMBER%11 == 0) || (TRIALNUMBER > 999990) || ((TRIALNUMBER > 28435) && 
 	{
           print_obstacle_pos(ii);
 	  
-	  if(CALC_MODULI)
-		calculate_moduli_variables(ii);
-
 	  #if PRINT_SHELL_SPRING
 	  print_shell_spring_data(ii);
           if(ii > NUMSTEPS / 2)
@@ -557,9 +532,6 @@ if((TRIALNUMBER%11 == 0) || (TRIALNUMBER > 999990) || ((TRIALNUMBER > 28435) && 
    {
      fclose(totforcefile);
    }
-   if(CALC_MODULI)
-	fclose(fluctuation_file);
-
 
    dummy= system(mvcommand);
 

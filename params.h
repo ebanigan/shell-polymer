@@ -20,7 +20,6 @@ using namespace boost::math;
 #define BOX_RESIZE cl_box_resize
 #define EXTENDED_RELAXATION cl_extended_relaxation
 
-#define CALC_MODULI cl_calc_moduli
 #define HYSTERESIS cl_hysteresis
 
 #define PRINT_YLM false
@@ -114,7 +113,6 @@ using namespace boost::math;
 #define SPRINGCONST (cl_springconst)//((100.*KT)/(MONO_DIAM*MONO_DIAM))//soft repulsion coeff.
 #define POLYMER_EXC_VOL_SPRING cl_polymer_exc_vol_spring
 #define BOND_SPRING (cl_bond_spring)//((100.*KT)/(MONO_DIAM*MONO_DIAM))//bond potential coeff.
-#define STIFFNESS (0.)//coefficient for bending potential
 //coefficient for orientation potential
 #define POLARIZABILITY (100.)//fixed
 
@@ -206,8 +204,6 @@ See, for ex., Einstein's Investigations on the Theory of Brownian Motion*/
 #define PRINT_RGYR true
 
 //variables for polymer polarization vectors
-#define NN_POLARIZATION_INT (0.)//strength of nearest neighbor polarization interaction
-#define NEXT_NN_POLARIZATION_INT (0.*NN_POLARIZATION_INT)//strength of interaction between polarizations of next nearest neighbors
 #define POL_ANGLE (PI*10./180.)//Alternatively, this could be defined as TWOPI/PITCH, if we define PITCH to be the number of monomers for the preferred polarization to rotate 2pi
 #define COS_POL_ANGLE cos(POL_ANGLE)//preferred angle between nearest neighbor polarizations
 #define COS_TWO_POL_ANGLE cos(2.*POL_ANGLE)//aka preferred angle between next nearest neighbor polarizations.

@@ -43,7 +43,7 @@ extern bool cl_print_lammps;
 extern double cl_kt, cl_new_kt, cl_dt, cl_polymer_tdiff_coeff_factor;
 extern bool cl_pdb;
 
-extern bool cl_lowt_protocol, cl_box_resize, cl_extended_relaxation, cl_calc_moduli;
+extern bool cl_lowt_protocol, cl_box_resize, cl_extended_relaxation;
 
 extern bool cl_cylinder;
 extern double cl_cylinder_length;
@@ -78,8 +78,6 @@ extern FILE *fourierfile;
 extern char fouriername[128];
 extern FILE *totforcefile;
 extern char totforcename[128];
-extern FILE *fluctuation_file;
-extern char fluctuation_name[128];
 
 extern void (*binding_func)(int, int);
 extern void (*bending_func)(int);

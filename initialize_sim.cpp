@@ -110,46 +110,12 @@ else
  TOP_WALLFORCE = 0.;
 }
 
-if(CALC_MODULI)
-{
-double max_y = 0.;
-int max_y_mono = 0;
-for(ii = NUMBER_IN_POLYMER; ii < NUMBER_OF_MONOMERS; ii++)
-{
-//should make sure num load monos is set to 1 otherwise this will lead to some gibberish results
-  if(mono_list[ii].get_load_mono())
-	mono_list[ii].set_update_bool(false);
-  else if(mono_list[ii].get_pos(1) > max_y)
-  {
-    max_y = mono_list[ii].get_pos(1);
-    max_y_mono = ii;
-  }
-}
-mono_list[max_y_mono].set_update_bool(false);
-}
 
 update_system(0);
 
-/*
-for(ii = 0; ii < NUMBER_OF_MONOMERS; ii++)
-{
-	if(mono_list[ii].get_load_mono())
-	 fprintf(stderr, "%i %g %g %g %g\n", ii, mono_list[ii].get_load_rest_length(), mono_list[ii].get_prev_pos(0), mono_list[ii].get_prev_pos(1), mono_list[ii].get_prev_pos(2));
-}
-
-*/
 
 fprintf(stderr, "Initialization complete.\n");
 
-/*
-for(n = 0; n < NUMBER_OF_MONOMERS; n++)
-{
-fprintf(stderr, "m %i pos %g %g %g prev pos %g %g %g\n", n, mono_list[n].get_pos(0), mono_list[n].get_pos(1), mono_list[n].get_pos(2), mono_list[n].get_prev_pos(0), mono_list[n].get_prev_pos(1), mono_list[n].get_prev_pos(2));
-}
-for(n = 0; n < pairs.size(); n++)
-{
-	fprintf(stderr, "mono pair %i is %i %i with sep %g %g %g and bl %g\n", n, (*(pairs[n].first)).get_id(), (*(pairs[n].second)).get_id(), pairs[n].get_relative_position(0), pairs[n].get_relative_position(1), pairs[n].get_relative_position(2), pairs[n].get_bond_length());
-}*/
 
 
 }
@@ -317,8 +283,6 @@ void initialize_cl()
 	cl_cylinder = false;
 	cl_cylinder_length = SHELL_RADIUS;
 
-	cl_calc_moduli = false;
-
 	cl_compress = false;
 }
 
@@ -349,11 +313,6 @@ void initialize_files()
 	totforcefile = fopen(totforcename, "w");
  }
 
-if(CALC_MODULI)
-{ 
- sprintf(fluctuation_name, "/tmp/fluctuations%6.6i", TRIALNUMBER);
- fluctuation_file = fopen(fluctuation_name, "w");
-}
 }
 
 
