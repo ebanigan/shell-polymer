@@ -247,7 +247,6 @@ for(ii = 0; ii < num_shell_monos; ii++)
 
 }//while shell is not connected.
 
-//exit(1);
 
 fprintf(stderr, "tot attachments %i tot monos %i\n", tot_attachments, num_shell_monos);
 
@@ -255,14 +254,6 @@ attachment_matrix.clear();
 main_shell.clear();
 
 fprintf(stderr, "end create shell\n");
-
-/*
- * for(ii = NUMBER_IN_POLYMER; ii < NUMBER_OF_MONOMERS; ii++)
- * {
- * double rad = sqrt((mono_list[ii].get_pos(0) - LX*.5)*(mono_list[ii].get_pos(0) - LX*.5) + (mono_list[ii].get_pos(1) - LY*.5)*(mono_list[ii].get_pos(1) - LY*.5)+(mono_list[ii].get_pos(2) - LZ*.5)*(mono_list[ii].get_pos(2) - LZ*.5));
- * fprintf(stderr, "%g %g %g %g\n", mono_list[ii].get_pos(0), mono_list[ii].get_pos(1), mono_list[ii].get_pos(2), rad);
- * }
- * */
 
 
 }//end create_cylinder

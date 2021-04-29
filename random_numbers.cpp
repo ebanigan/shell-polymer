@@ -25,16 +25,6 @@ iseed0 = ic+it;
   }
 rc = ic;
 
-/*
-if(iseed0/rc < DENUCLEATE_PARAM)
-{
- fprintf(stderr, "one occurrence after %li\n", running_counter);
- running_counter = 0;
-}
-else
- running_counter++;
-*/
-
 return iseed0/rc;
 }//end of ranf0()
 
@@ -244,16 +234,6 @@ iseed5 = ic+it;
   }
 rc = ic;
 
-/*
-if(iseed5/rc < DENUCLEATE_PARAM)
-{
- fprintf(stderr, "one occurrence after %li\n", running_counter);
- running_counter = 0;
-}
-else
- running_counter++;
-*/
-
 return iseed5/rc;
 }//end of ranf5()
 
@@ -297,20 +277,12 @@ double gaussian_std()
 
 double gaussian_inverf(unsigned long long step)
 {
-
-//char rname[96];
-//FILE *rfile;
-//sprintf(rname, "output/rnum%6.6i", TRIALNUMBER);
-//rfile = fopen(rname, "a");
 	double r;
 
 	do{
 	  r = RNUM0.get_double();
 	}while(r < 1.e-16);
 
-//	double input = 2.*(r-0.5);
 	return (SQRT_TWO* erf_inv( 2.*(r-0.5) ));
-//fflush(rfile);
-//fclose(rfile);
 }
 

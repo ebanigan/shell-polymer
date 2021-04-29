@@ -30,13 +30,14 @@ double shell_cm[DIMENSION];
 vector<dynamic_monomer> mono_list;
 dynamic_monomer central_mono;
 
-vector<int> monolinklist;//insanity. ??
+vector<int> monolinklist;
 vector<vector<vector<int> > > firstmonoincell;
 
 vector<monomer_pair> pairs;
 vector<monomer_pair> crosslinkpairs;
 
 
+//some variables for rand num generators
 int iseed0, iseed1, iseed2, iseed3, iseed4, iseed5, iseed6;
 double gauss_prefact1, gauss_exp_const1, gauss_range1;
 double gauss_prefact2, gauss_exp_const2, gauss_range2;
@@ -44,10 +45,8 @@ double gauss_prefact3, gauss_exp_const3, gauss_range3;
 double gauss_prefact6, gauss_exp_const6, gauss_range6;
 double gauss_prefact_std, gauss_exp_const_std, gauss_range_std;
 
+//global variable saving the index of monomers that are indentation points if load force < 0
 int indentation1, indentation2;
-
-double LJ_MIN, LJ_MIN2, LJ_MIN6, LJ_MIN12, LJ_MIN14, LJ_MIN16; 
-double TETHER_RANGE;
 
 RNG_taus RNUM0, RNUM1;
 
@@ -72,7 +71,6 @@ double pipette_dist_from_center;
 //long running_counter;
 
 unsigned long long cl_numsteps;
-double cl_epsilon;
 int cl_trialnumber;
 double cl_lx, cl_ly;
 double cl_parb_stiffness;
@@ -134,8 +132,8 @@ initialize_cl();
 
 int option;
 //remaining options are
-//J
-while( (option = getopt(argc, argv, "t:e:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v:C:F:w:p:y:d:q:g:h:X:R:Z:A:B:W:Y:O:D:E:Q:m:G:H:i:K:j:U:I:")) != -1)
+//eJ
+while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v:C:F:w:p:y:d:q:g:h:X:R:Z:A:B:W:Y:O:D:E:Q:m:G:H:i:K:j:U:I:")) != -1)
 {
  switch(option)
  {
@@ -143,8 +141,6 @@ while( (option = getopt(argc, argv, "t:e:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c
     cl_trialnumber = atoi(optarg); break;
   case 'n':
     cl_numsteps = atoi(optarg); break;
-  case 'e':
-    cl_epsilon = atof(optarg); break;
   case 'x':
     cl_lx = atof(optarg); break;
   case 's': 
@@ -297,7 +293,6 @@ while( (option = getopt(argc, argv, "t:e:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c
 	fprintf(stderr, "menu:\n");
 	fprintf(stderr, "trial -t\n");
 	fprintf(stderr, "dt -d\n");
-	fprintf(stderr, "epsilon -e\n");
 	fprintf(stderr, "force -f\n");
 	fprintf(stderr, "radius -r\n");
 	fprintf(stderr, "stiffness -s\n");

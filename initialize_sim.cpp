@@ -238,30 +238,15 @@ pipette_dist_from_center = 0.;
 
  saved_extension = 0.;
 
-if(EPSILON > 1.e-5)
-{
-fprintf(stderr, "initializing binding function\n");
-        binding_func = &binding;
-}
-else
-{
-fprintf(stderr, "initializing null binding\n");
-        binding_func = &binding_null;
-}
+//remnant of a trial of non-specific binding.
+//a binding function could be inserted here instead of this empty function
+//fprintf(stderr, "initializing null binding\n");
+binding_func = &binding_null;
 
    if(PARB_STIFFNESS < 1.e-5)
 	bending_func = &bending_null;
    else
 	bending_func = &bending;
-
-//added 150510, binding variables now apply only to polymer-polymer interactions
-LJ_MIN= 0.925820099772551*2.*cl_polymer_mono_rad;//(0.890898718140339*MONO_DIAM)//=.5^(1/6)
-LJ_MIN2= LJ_MIN*LJ_MIN;
-LJ_MIN6= LJ_MIN2*LJ_MIN2*LJ_MIN2;
-LJ_MIN12= LJ_MIN6*LJ_MIN6;
-LJ_MIN14= LJ_MIN2*LJ_MIN12;
-LJ_MIN16= LJ_MIN2*LJ_MIN14;
-TETHER_RANGE= 3.*2.*cl_polymer_mono_rad;
 
 
 
@@ -277,7 +262,6 @@ TETHER_RANGE= 3.*2.*cl_polymer_mono_rad;
 void initialize_cl()
 {
 	cl_trialnumber = 999999;
-	cl_epsilon = 0.;
 	cl_lx = 50.;
 	cl_parb_stiffness = 0.;
 	cl_f_load = 0.;

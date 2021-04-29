@@ -1,7 +1,3 @@
-//#define SHELL_RADIUS 10.0
-//#define NUM_RELAXATION_STEPS ((long)(1e4))
-//num_shell_monos = (int)(16.*SHELL_RADIUS*SHELL_RADIUS);
-
 void create_shell()
 {
 int ii,jj,kk,ii2;
@@ -209,13 +205,6 @@ for(ii = 0; ii < num_shell_monos; ii++)
 
 tot_attachments = 0;
 
-/*
-FILE *bondfile;
-char bondname[96];
-sprintf(bondname, "bond%6.6i", TRIALNUMBER);
-bondfile = fopen(bondname, "w");
-*/
-
 
 for(ii = NUMBER_IN_POLYMER; ii < NUMBER_OF_MONOMERS; ii++)
 {
@@ -238,9 +227,6 @@ if(!attachment_matrix[ii-NUMBER_IN_POLYMER][jj-NUMBER_IN_POLYMER])
 if(num_attachments[ii-NUMBER_IN_POLYMER] < UPPER_BOUND_CONNECTIVITY)//don't let ii go above the upper bound...
 if(num_attachments[jj-NUMBER_IN_POLYMER] < UPPER_BOUND_CONNECTIVITY)//also check that jj is below upper bound...
 {
-//the reason for printing this way is easy mathematica visualization
-//      fprintf(stderr, "{%i,%i},", ii+1-NUMBER_IN_POLYMER, jj+1-NUMBER_IN_POLYMER);
-//      fprintf(bondfile, "bonddist %g\n", bonddist-0.75*sqrt(4.*PI*SHELL_RADIUS*SHELL_RADIUS / num_shell_monos));
         num_attachments[ii-NUMBER_IN_POLYMER] = num_attachments[ii-NUMBER_IN_POLYMER] + 1;
         num_attachments[jj-NUMBER_IN_POLYMER] = num_attachments[jj-NUMBER_IN_POLYMER] + 1;
         attachment_matrix[ii-NUMBER_IN_POLYMER][jj-NUMBER_IN_POLYMER] = true;
@@ -334,21 +320,12 @@ for(ii = 0; ii < num_shell_monos; ii++)
   }//if(!main_shell[ii])
 }//for(ii...
 }//while shell is not connected.
-//exit(1);
 fprintf(stderr, "tot attachments %i tot monos %i\n", tot_attachments, num_shell_monos);
 
 attachment_matrix.clear();
 main_shell.clear();
 
 fprintf(stderr, "end choose shell attachments\n");
-
-/*
-  for(ii = NUMBER_IN_POLYMER; ii < NUMBER_OF_MONOMERS; ii++)
-  {
-  double rad = sqrt((mono_list[ii].get_pos(0) - LX*.5)*(mono_list[ii].get_pos(0) - LX*.5) + (mono_list[ii].get_pos(1) - LY*.5)*(mono_list[ii].get_pos(1) - LY*.5)+(mono_list[ii].get_pos(2) - LZ*.5)*(mono_list[ii].get_pos(2) - LZ*.5));
-  fprintf(stderr, "%g %g %g %g\n", mono_list[ii].get_pos(0), mono_list[ii].get_pos(1), mono_list[ii].get_pos(2), rad);
-  }
-  */
 
 }//end choose_shell_attachments()
 

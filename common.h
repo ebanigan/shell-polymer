@@ -13,19 +13,7 @@ extern double center_mass_pos[DIMENSION];
 
 extern int indentation1, indentation2;
 
-extern double LJ_MIN;
-extern double LJ_MIN2;
-extern double LJ_MIN6;
-extern double LJ_MIN12;
-extern double LJ_MIN14;
-extern double LJ_MIN16;
-extern double TETHER_RANGE;
-
-//rand # test
-//extern long running_counter;
-
 extern int cl_trialnumber;
-extern double cl_epsilon;
 extern double cl_lx, cl_ly;
 extern double cl_parb_stiffness;
 extern double cl_f_load;

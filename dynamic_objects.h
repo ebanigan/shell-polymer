@@ -156,8 +156,6 @@ class dynamic_monomer:public monomer, public dynamic_object{
         double x0[DIMENSION]; //intial position of monomer
 	double xbar[DIMENSION]; // time avged position        
 
-        //pair_num1 inactive as of 6/26/08
-        //long pair_num1;
         int pair_num2, crosslink_num, nextnn_pair_num2;
 /*
  * pair_num2 is id of "monomer_pair" in which monomer is  "second"
@@ -168,52 +166,18 @@ class dynamic_monomer:public monomer, public dynamic_object{
 	//only for use with parb-dna polymer
 	long parb_bindsite_id;
 
-	//for measuring attachment and "strong attachment" time.  The next 4 variables measure consecutive time steps of attachment time
-	#if TETHER
-       	long t_attached;
-     	long t_strong_attached;
-        long prev_t;
-        long prev_tstrong;
-	#endif	
 
-bool update_bool;//tells sim whether or not to update this mono
+        bool update_bool;//tells sim whether or not to update this mono
 
  
       public:
-void outward_pressure();
+        void outward_pressure();
 
-void set_update_bool(bool update_status){update_bool = update_status;}
-bool get_update_bool(){return update_bool;}
-//functions for modifying attachment time related variables
-	#if TETHER
-	long get_t_attached(){return t_attached;}
-	long get_t_strong_attached(){return t_strong_attached;}
-	long get_prev_t(){return prev_t;}
-	long get_prev_tstrong(){return prev_tstrong;}
-	void increment_t()
-        {
-           t_attached++;
-        }
-	void increment_tstrong(){t_strong_attached++;}
-	void increment_prev_t(){prev_t++;}
-	void increment_prev_tstrong(){prev_tstrong++;}
-    void reset_t_attached()
-	{
-	    prev_t = 0;
-        t_attached = 0;
-        }
-    void reset_t_strong_attached()
-  	{
-	    prev_tstrong = 0;
-        t_strong_attached = 0;
-	}
-	#endif
+        void set_update_bool(bool update_status){update_bool = update_status;}
+        bool get_update_bool(){return update_bool;}
 
 
-//functions for getting and changing "pair_num' variables
-        //pair_num1 inactive as of 6/26/08
-        //long get_pair_num1(){return pair_num1;}
-        //void set_pair_num1(long number){pair_num1 = number;}
+        //functions for getting and changing "pair_num' variables
         long get_pair_num2(){return pair_num2;}
         long get_crosslink_num(){return crosslink_num;}
         long get_nextnn_pair_num2(){return nextnn_pair_num2;}
@@ -225,14 +189,14 @@ bool get_update_bool(){return update_bool;}
         void decrement_nextnn_pair_num2(){nextnn_pair_num2--;}
 
 		
-		//next 3 only for use with parb-dna polymer
-		bool parb_bindsite;
-		void add_parb_bindsite(long nn)
-		{
-		  parb_bindsite = true;
-		  parb_bindsite_id = nn;
-		}
-		long get_parb_bindsite_id(){return parb_bindsite_id;}
+	//next 3 only for use with parb-dna polymer
+	bool parb_bindsite;
+	void add_parb_bindsite(long nn)
+	{
+	  parb_bindsite = true;
+	  parb_bindsite_id = nn;
+	}
+	long get_parb_bindsite_id(){return parb_bindsite_id;}
 		  
 
 //default constructor
@@ -246,47 +210,23 @@ dynamic_monomer(long num, double invdrag)
         double sum_sq = 0.;
 
 
-exc_vol_spring_const = SPRINGCONST;       
-crosslinked = false; 
-shell_poly_link = false;
-        //same as monomer object constructor between /*****/
-        /*****/
+        exc_vol_spring_const = SPRINGCONST;       
+        crosslinked = false; 
+        shell_poly_link = false;
         id = num;
         update_bool = true;
-        //pair_num1 = -1;
 	parb_bindsite_id = -1;
         pair_num2 = -1;
 	crosslink_num = -1;
         nextnn_pair_num2 = -1;
-        #if INITIALIZE_DIMERS
-        nucleate_prob = 0.;//want nucleate prob = 0.; when initiating dimers.
-        #else
-        nucleate_prob = NUCLEATE_PARAM;
-        #endif
         denucleate_prob = 0.;
-        new_denucleate_prob = 0.;
-        new_debranching_prob = 0.;
-        capping_prob = 0.;
-//        capping_prob = CAPPING_PARAM;
-        uncapping_prob = 0.;
-        branching_prob = 0.;
-        debranching_prob = 0.;
-        associate_arp23_prob = 0.;
-        //associate_arp23_prob = ASSOC_ARP23_PARAM;
-        dissociate_arp23_prob = 0.;
         
         plus = NULL;
         minus = NULL;
-        new_branch = NULL;
         plus_is_nucleated = false;
         minus_is_nucleated = false;
-        plus_is_capped = false;
-        mono_has_arp23 = false;
-        mono_has_branch = false;
 		
 	parb_bindsite = false;
-
-        /*****/
 
 	load_mono = false;
 	sign_load = 0.; 
@@ -332,13 +272,6 @@ shell_poly_link = false;
         diam2 = diameter*diameter;// (2r)^2
         invdiam2 = 1./diam2;
         mass = MONO_MASS;
-
-#if TETHER
-prev_t = 0;
-prev_tstrong = 0;
-t_attached = 0;
-t_strong_attached = 0;
-#endif
 
 }//end of constructor
 

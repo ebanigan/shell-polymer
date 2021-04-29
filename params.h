@@ -54,7 +54,6 @@ using namespace boost::math;
 #define WRITE true
 #define RESTART cl_restart
 
-#define TETHER true 
 #define LOAD false
 
 
@@ -78,16 +77,6 @@ using namespace boost::math;
 #define INITIALIZE_DIMERS true 
 /*Set to true to initialize the system with dimers. 
 If set to false, spontaneous nucleation is allowed*/
-
-#define NUCLEATE_PARAM 0.00//probability to nucleate (polymerize) upon contact
-#define DENUCLEATE_PARAM 0.00e-6//probability to denucleate (depolym) during a given timestep
-#define CAPPING_PARAM 0.0//probability to be capped during a timestep
-#define UNCAPPING_PARAM 0.//prob. to uncap
-#define ASSOC_ARP23_PARAM 0.00// prob to associate w/ arp2/3
-#define DISSOC_ARP23_PARAM DENUCLEATE_PARAM// prob to dissociate arp2/3
-#define BRANCHING_PARAM NUCLEATE_PARAM///probability to branch on contact
-#define DEBRANCHING_PARAM DENUCLEATE_PARAM //leave debranching in b/c easier to keep track of with my book keeping scheme
-
 
 #define BOOK_KEEPING_TEST true//set to true to run book_keeping_tests() -- need this true to run number_free()
 #define PRINT_NUM_IN_FIL true//set to true if want to print #monos in filaments (instead of free + or - ends) to file
@@ -127,13 +116,6 @@ If set to false, spontaneous nucleation is allowed*/
 #define OBSTACLE_FRIC (20.*FRICTION_COEFF)
 
 
-//parameters governing strength of interaction potentials
-//all but "polarizability" and tether related params  are taken from Lee and Liu (2008)
-#define EPSILON (cl_epsilon)
-#define TETHER_STR (EPSILON/(LJ_MIN12-LJ_MIN14))
-#define TETHER_COS_POWER 2//angular dependence for tethering potential goes as cosine to this power
-
-
 #define SIDE_BIND false
 #define SPRINGCONST (cl_springconst)//((100.*KT)/(MONO_DIAM*MONO_DIAM))//soft repulsion coeff.
 #define POLYMER_EXC_VOL_SPRING cl_polymer_exc_vol_spring
@@ -162,17 +144,6 @@ If set to false, spontaneous nucleation is allowed*/
 #define COS_F_ANGLE (cos(FIL_ANGLE))
 #define COS_B_ANGLE (cos(BRANCH_ANGLE))
 
-//LJ_MIN is actually the sigma parameter of the LJ potential... or for the 14-12, a useful parameter
-/*
-#define LJ_MIN (0.925820099772551*MONO_DIAM)//(0.890898718140339*MONO_DIAM)//=.5^(1/6)
-#define LJ_MIN2 (LJ_MIN*LJ_MIN)
-#define LJ_MIN6 (LJ_MIN2*LJ_MIN2*LJ_MIN2)//=0.5
-#define LJ_MIN12 (LJ_MIN6*LJ_MIN6)
-#define LJ_MIN14 (LJ_MIN2*LJ_MIN12)
-#define LJ_MIN16 (LJ_MIN2*LJ_MIN14)
-#define TETHER_RANGE (3.*MONO_DIAM)
-*/
-#define TETHER_RANGE_SQ (TETHER_RANGE*TETHER_RANGE)
 
 #define unif_rand() (RNUM1.get_double())//(ranf0()) // ((double) rand()/RAND_MAX) //uniform random number generator
 #define ranf_std() (RNUM0.get_double())
@@ -193,12 +164,7 @@ If set to false, spontaneous nucleation is allowed*/
                            making it small is advantageous because it speeds up the rejection method.
                            Making it too small with affect the accuracy of the Gaussian distribution, 
                            but 10*stddev is quite a large range...  P(10sigma) < 2e-22 * P(0)*/  
-#define MAX_FORCE_LOC (1.15470053838*LJ_MIN )//= 2*sigma/sqrt(3) = distance r which gives the max value of force due to radial part of potential
-#define MAX_FORCE_LOC14 (7.49154092364*LJ_MIN14)
-#define MAX_FORCE_LOC16 (9.98872123151*LJ_MIN16)
 
-#define STRONG_ATTACH_THRESHOLD (-1.)
-#define STRONG_ATTACH_THRESHOLD2 (STRONG_ATTACH_THRESHOLD*STRONG_ATTACH_THRESHOLD)
 
 
 //#define RCUT2 (RCUT*RCUT)
@@ -260,10 +226,6 @@ See, for ex., Einstein's Investigations on the Theory of Brownian Motion*/
 #define PARB_STICKING_PLANE (75.*MONO_DIAM)
 #define PARB_DOES_NOT_BIND_AFTER_STICKING false
 
-#define DENUC_OVER_TETHER (DENUCLEATE_PARAM/EPSILON)
-#define DENUC_OVER_TETHER2 (DENUC_OVER_TETHER/EPSILON)
-#define DEBRANCH_OVER_TETHER (DEBRANCHING_PARAM/EPSILON)
-#define DEBRANCH_OVER_TETHER2 (DEBRANCH_OVER_TETHER/EPSILON)
 
 
 #define PRINT_CM_ONLY false
