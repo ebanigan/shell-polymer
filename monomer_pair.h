@@ -11,7 +11,6 @@ keeps track of every pairwise polymer/network bond interaction.
 
 class monomer_pair{
   protected:
-//    long pair_id;
 /*Relative position variables.  These can be calculated once per time step with
 the update_relative_positions function and then used by each of the interaction 
 functions.  Since these will be used by every pair on every time step, it is 
@@ -56,8 +55,6 @@ more efficient than calculating each as needed (which would be more than once).*
 	  bond_length = sqrt((*second).calculate_distance_sq(first, PREVIOUS));
 	else
 	  bond_length = MONO_DIAM;
-
-//fprintf(stderr, "bl %g ids %i %i\n", bond_length, (*first).get_id(), (*second).get_id());
     }
     
     //to be called at the end of update_system()
@@ -107,12 +104,8 @@ more efficient than calculating each as needed (which would be more than once).*
 //since bond_length will generally be less than MONO_DIAM, this potential isn't the main source of repulsive interactions
      {
       //this expression may have to be changed if we add hydrodynamics, since tdiffusion coefficient will change
-      prefactor1 = ((*first).get_tdiffusion_coeff())*dt*bond_strength;//no invKT here! -- unless stiffness coeffs get their KT back.. 160405
+      prefactor1 = ((*first).get_tdiffusion_coeff())*dt*bond_strength;
       prefactor2 = ((*second).get_tdiffusion_coeff())*dt*bond_strength;
-      /*if (bond_strength < 99.) 
-         fprintf(stderr, "bond %g, pref %g\n", bond_strength,prefactor1); 
-      else if (bond_strength > 101.)
-         fprintf(stderr, "bond %g, pref %g\n", bond_strength, prefactor1);*/
       for(kk = 0; kk < DIMENSION; kk++)
       {     
        attraction1[kk] -= prefactor1*(relative_position[kk])*(1.-bond_length*inv_separation);
@@ -121,8 +114,6 @@ more efficient than calculating each as needed (which would be more than once).*
        attraction2[kk] += prefactor2*(relative_position[kk])*(1-bond_length*inv_separation);      
       }
 
-//fprintf(stderr, "bond strength = %g length = %g\n", bond_strength, bond_length);
- 
      (*first).move(attraction1);
      (*second).move(attraction2);
      }
@@ -190,9 +181,7 @@ Uses potential = .5*K*(costheta - costheta0)^2.
     void orientation_potential()
     {
          double bond_vector[DIMENSION], bhat[DIMENSION];
-//         double bond_vector_mag = separation;
          double inv_bond_vector_mag = inv_separation;
-//         double inv_bond_vector_mag2;
          double pol1[DIMENSION], pol2[DIMENSION];
          double rot1[DIMENSION], rot2[DIMENSION];
          double move1[DIMENSION], move2[DIMENSION];
@@ -268,10 +257,10 @@ void crosslink_potential()
        motion2[kk] = 0.;
      }
      
-	 #if CROSSLINK_ATTRACTIVE_ONLY
+#if CROSSLINK_ATTRACTIVE_ONLY
      if(separation2 > CROSSLINK_LENGTH2)
      {
-	 #endif
+#endif
       //this expression may have to be changed if we add hydrodynamics, since tdiffusion coefficient will change
       prefactor1 = ((*first).get_tdiffusion_coeff())*dt*CROSSLINK_SPRING;
       prefactor2 = ((*second).get_tdiffusion_coeff())*dt*CROSSLINK_SPRING;
@@ -282,9 +271,9 @@ void crosslink_potential()
        //e.g., if first's x is greater than second's x, we want first's x to decrease.
        motion2[kk] += prefactor2*(relative_position[kk])*(1.-CROSSLINK_LENGTH*inv_separation);
       }
-	 #if CROSSLINK_ATTRACTIVE_ONLY
+#if CROSSLINK_ATTRACTIVE_ONLY
      }
-	 #endif
+#endif
 
      (*first).move(motion1);
      (*second).move(motion2);

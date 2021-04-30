@@ -12,7 +12,6 @@ extern double gaussian6();
 extern double gaussian_std();
 extern double gaussian_inverf(unsigned long long);
 
-
 extern void initialize_sim(); //initializes rand # gen, system, etc.
 extern void initial_dynamics();
 extern void initialize_system_params();
@@ -26,17 +25,14 @@ extern void add_bond(int, int);
 extern void set_pipette_position();
 
 extern void update_system(long);
-
 extern void polymer_interactions();
 
 void write_state_to_pdb(unsigned long long);
-
 
 extern void create_polymer();
 extern void create_cylinder();
 extern void connect_shell_poly();
 extern void relax_crosslinks(double);
-
 
 extern void binding(int, int);
 extern void binding_null(int, int);
@@ -60,7 +56,6 @@ int get_firstmonoincell(int, int, int);
 int get_monolinklist(int);
 void initialize_neighbor_list();
 void update_mono_list();
-
 
 extern void print_fourier(unsigned long long);
 extern double re_exp_nphi(double, double, double, int);

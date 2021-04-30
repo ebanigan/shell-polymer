@@ -35,12 +35,8 @@ for(ii=0; ii < NUMBER_OF_SHELL_POLY_CONNECTIONS; ii++)
 		}//if kk !linked
 	  }//for(kk
 
-fprintf(stderr, "shell poly connect %i %i\n", jj, linkmono);
+                fprintf(stderr, "shell poly connect %i %i\n", jj, linkmono);
                 monomer_pair temp_crosslinkpair(&mono_list[jj], &mono_list[linkmono], true, BOND_SPRING, 0., 0., 0.);
-//I noticed this was bond length on 7/19/16... not changed yet though.... 
-//                temp_crosslinkpair.set_bond_length(MONO_DIAM);
-//prob should use this:
-//changed on 8/16/16
 		temp_crosslinkpair.set_bond_length(MONO_RAD+cl_polymer_mono_rad);
                 crosslinkpairs.push_back(temp_crosslinkpair);
                 mono_list[jj].set_shell_poly_link(true);

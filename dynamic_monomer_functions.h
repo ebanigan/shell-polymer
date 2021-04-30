@@ -40,14 +40,12 @@ if I add multiple interaction potentials, it may be good to calculate the distan
 and feed it into each interaction function*/
       force = harmonic_repulsion(mono, separation2, kk);
 
-      movement1[kk] = (get_tdiffusion_coeff())*dt*force;//I used to multiply by invKT here, but that canceled out the temperature dependence-mainly because when I started playing with temperature, I took the temperature dependence out of the stiffness coefficients.160405
+      movement1[kk] = (get_tdiffusion_coeff())*dt*force;
       movement2[kk] = -1.*dt*force*(*mono).get_tdiffusion_coeff();
      }
 
      move(movement1);
      (*mono).move(movement2);
-
-     //fprintf(stderr, "mvmnt %g %g %g, SPRINGCONST %g\n", movement1[0], movement1[1], movement1[2], SPRINGCONST);
 
 }//end of sys_force()
 
@@ -65,7 +63,6 @@ double dynamic_monomer::harmonic_repulsion(dynamic_monomer *mono, double separat
       if(separation2 < tot_overlap_dist2)
       {
         separation = sqrt(separation2);
-        //overlap = sqrt(separation2) - diameter;
 //really, we are compressing to springs (in series).  to get an effective spring constant to be SPRINGCONST (or whatever fed-in variable) as is conventional in my codes, need to multiply by factor of 2 in front 
 	effective_spring_const = 2.*exc_vol_spring_const*(*mono).get_exc_vol_spring_const() / (exc_vol_spring_const + (*mono).get_exc_vol_spring_const());
 
@@ -78,7 +75,6 @@ double dynamic_monomer::harmonic_repulsion(dynamic_monomer *mono, double separat
         //note, other coefficients are already accounted for in sys_force() function to which this returns
       }
 
-//fprintf(stderr, "repulsion = %g???\n", repulsion); 
   return repulsion; 
 }//end harmonic repulsion
 

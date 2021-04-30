@@ -23,7 +23,7 @@ void create_polymer()
 
 if(NUMBER_IN_POLYMER > 1)
 {
-//ONE PROBLEM is that mono_list 1 position is not yet set.. one not very elegant but practical solution is to just temporarily set mono1's position 
+//mono_list 1 position is not yet set. not very elegant but practical solution is to just temporarily set mono1's position 
 	for(kk = 0; kk < DIMENSION-1; kk++)
 	  mono_list[1].set_pos(kk, mono_list[0].get_prev_pos(kk));
 	kk=DIMENSION-1;//just to be sure..
@@ -36,7 +36,7 @@ if(NUMBER_IN_POLYMER > 1)
 	pairs.push_back(temp_pair);
 }	 
 
-//Main part of filament
+//Main part of polymer
 for(ii = 1; ii < NUMBER_IN_POLYMER; ii++)//it's okay to count up to NUMBER_IN_POLYMER since I have an if statement buried in the for loop
 {
 double next_pos[DIMENSION];
@@ -85,7 +85,6 @@ while((next_pos[0]-0.5*LX)*(next_pos[0]-0.5*LX)*xfactor + (next_pos[1]-0.5*LY)*(
        //if monomer is not the last in the filament, polymerize the next one
        if(ii!=NUMBER_IN_POLYMER-1)
        {
-//ONE PROBLEM is that mono_list 1 position is not yet set.. one not very elegant but practical solution is to just temporarily set mono1's position 
         for(kk = 0; kk < DIMENSION-1; kk++)
             mono_list[ii+1].set_pos(kk, mono_list[ii].get_prev_pos(kk));
         mono_list[ii+1].set_pos(kk, mono_list[ii].get_prev_pos(kk)+1.0);
@@ -239,3 +238,4 @@ int ii;
 for(ii = 0; ii < NUMBER_OF_CROSSLINKS; ii++)
      crosslinkpairs[ii].set_bond_strength(fractional_str*cl_crosslink_spring_factor*BOND_SPRING);
 }
+

@@ -89,11 +89,7 @@ else
 
 update_system(0);
 
-
 fprintf(stderr, "Initialization complete.\n");
-
-
-
 }
 
 
@@ -257,7 +253,7 @@ void initialize_files()
       springfile = fopen(springfilename, "w");
 #endif
 
-      sprintf(extfilename, "/tmp/radius_of_gyrationsq%6.6i", TRIALNUMBER);
+      sprintf(extfilename, "/tmp/extension%6.6i", TRIALNUMBER);
       extfile = fopen(extfilename, "w");	
 
 

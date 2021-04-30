@@ -5,13 +5,7 @@ void print_stresses(unsigned long long step)
 	int mono1, mono2;
 	double extension;
 	double position[DIMENSION];
-//	double tensile_stress[DIMENSION];
-//	double tensile_strain[DIMENSION];
-//	double tot_tensile_stress; 
 	double tot_tensile_strain;
-//      double compressive_stress[DIMENSION];
-//      double compressive_strain[DIMENSION];
-//      double tot_compressive_stress;
         double tot_compressive_strain;
         vector<double> tot_compressive_energy(num_shell_monos, 0.);
         vector<double> tot_tensile_energy(num_shell_monos, 0.);
@@ -77,11 +71,6 @@ cos_angle_file = fopen(cos_angle_file_name, "w");
 
 	  fprintf(tensile_strain_file, "%g %g %g %g\n", position[0], position[1], position[2], tot_tensile_strain);
 	  fprintf(cos_angle_file, "%g %g %g %g\n", position[0], position[1], position[2], cos_angle);
-
-/*
-	  fprintf(tensile_strain_file, "%i %g %g %g %g %g\n", mono1, mono_list[mono1].get_prev_pos(0), mono_list[mono1].get_prev_pos(1), mono_list[mono1].get_prev_pos(2), tot_tensile_strain);
-          fprintf(tensile_strain_file, "%i %g %g %g %g\n", mono2, mono_list[mono2].get_prev_pos(0), mono_list[mono2].get_prev_pos(1), mono_list[mono2].get_prev_pos(2), tot_tensile_strain);
-*/
 	}//loop over pairs for tension calc
 fflush(tensile_strain_file);
 fclose(tensile_strain_file);

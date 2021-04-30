@@ -9,9 +9,6 @@ double bonddist, prev_bonddist;
 double shellspringconst;
 
 
-if(DIMENSION==3)
-{
-
 for(ii = NUMBER_IN_POLYMER; ii < NUMBER_OF_MONOMERS; ii++)
 {
 if(ii < NUMBER_IN_POLYMER+NUM_BINDING_MONOS)
@@ -33,17 +30,10 @@ for(kk = 0; kk < DIMENSION; kk++)
 {
 	init_pos[kk] = init_pos[kk]*norm;
 	init_pos[kk] = init_pos[kk]+L[kk]*0.5;
-	//fprintf(stderr, "%i %i %g\n", ii, kk, init_pos[kk]);
 	mono_list[ii].set_pos(kk, init_pos[kk]);
 }
 mono_list[ii].set_prev_pos();
 }
-}//shell set up for dimension=3
-else if(DIMENSION==2)
-{
-}//dimension=2
-else
- fprintf(stderr, "weird dimension. exit\n");
 
 update_mono_list();
 
@@ -55,7 +45,6 @@ if(EXTENDED_RELAXATION)
 
 for(ii = 0; ii < relaxation_factor*NUM_RELAXATION_STEPS; ii++)
 {
-//write_state_to_pdb(ii);
 if(ii % (4*NUMSKIP) == 0)
 	fprintf(stderr, "relaxation %i\n", ii);
 
@@ -98,7 +87,6 @@ for(jj = 0; jj < NUMBER_IN_POLYMER; jj++)//yes, this is in fact the correct cycl
 	mono_list[jj].set_prev_pos();
 
 update_mono_list();
-//write_state_to_pdb(ii);
 
 if(ii % (25*NUMSKIP) == 0)
   run_resize_box();
@@ -120,7 +108,6 @@ void visit(int site_number)
    if(!main_shell[jj])
    if(attachment_matrix[site_number][jj])
    {
-//     fprintf(stderr, "%i\n", jj);
      main_shell[jj] = true;
      visit(jj);
    }
@@ -130,12 +117,12 @@ void visit(int site_number)
 
 void add_bond(int ii, int jj)
 {
-int kk;
-double shellspringconst;
+        int kk;
+        double shellspringconst;
 
-     fprintf(stderr, "{%i,%i},", ii+1, jj+1);
- num_attachments[ii] = num_attachments[ii] + 1;
- num_attachments[ii] = num_attachments[jj] + 1;
+        fprintf(stderr, "{%i,%i},", ii+1, jj+1);
+        num_attachments[ii] = num_attachments[ii] + 1;
+        num_attachments[ii] = num_attachments[jj] + 1;
 
         attachment_matrix[ii][jj] = true;
         attachment_matrix[jj][ii] = true;

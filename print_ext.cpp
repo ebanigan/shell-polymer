@@ -136,15 +136,7 @@ if(step % (NUMSKIP*100) == 0)
   }
 
  }
- 
- //saved_extension = 0.;
 }
-/*
-else 
-{
-	saved_extension += (max_shell-min_shell)*2./99.;
-}
-*/
 
 #if PRINT_CM_ONLY
 if(NUMBER_IN_POLYMER > 0)

@@ -9,9 +9,6 @@ void dynamic_object::translational_brownian_move()
     {
 	pos[kk] += gaussian_std();
     }
-
-
-
 //    check_translational_pbc();   
 }//end of translational_brownian_move()
 
