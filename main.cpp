@@ -4,7 +4,7 @@
 #include "monomer_dynamics.cpp"
 #include "update_system.cpp"
 #include "binding.cpp"
-#include "print_obstacle_pos.cpp"
+#include "print_ext.cpp"
 #include "print_shell_spring_data.cpp"
 #include "create_shell.cpp"
 #include "create_ellipsoid.cpp"
@@ -12,13 +12,12 @@
 #include "connect_shell_poly.cpp"
 #include "quicksort.cpp"
 #include "compress.cpp"
-#include "filament_interactions.cpp"
+#include "polymer_interactions.cpp"
 #include "create_polymer.cpp"
 #include "initialize_sim.cpp"
-#include "print_final_config.cpp"
 #include "print_stresses.cpp"
 #include "print_load_test.cpp"
-#include "print_ylm.cpp"
+#include "print_fourier.cpp"
 #include "run_resize_box.cpp"
 #include "write_state_to_pdb.cpp"
 
@@ -26,7 +25,6 @@ double shell_cm[DIMENSION];
 
 //various lists of objects
 vector<dynamic_monomer> mono_list;
-dynamic_monomer central_mono;
 
 vector<int> monolinklist;
 vector<vector<vector<int> > > firstmonoincell;
@@ -36,10 +34,8 @@ vector<monomer_pair> crosslinkpairs;
 
 
 //some variables for rand num generators
-int iseed0, iseed1, iseed2, iseed3, iseed4, iseed5, iseed6;
-double gauss_prefact1, gauss_exp_const1, gauss_range1;
+int iseed0, iseed2, iseed4, iseed5, iseed6;
 double gauss_prefact2, gauss_exp_const2, gauss_range2;
-double gauss_prefact3, gauss_exp_const3, gauss_range3;
 double gauss_prefact6, gauss_exp_const6, gauss_range6;
 double gauss_prefact_std, gauss_exp_const_std, gauss_range_std;
 
@@ -80,7 +76,6 @@ int cl_lower_bound_connectivity, cl_upper_bound_connectivity;
 bool cl_thermal, cl_length_dependent_springs;
 double cl_ldep_factor;
 double cl_os_pressure;
-bool cl_solid_interior;
 double cl_springconst;
 bool cl_springs_only, cl_extensional_springs_only;
 bool cl_variable_bond_length, cl_modified_shell_exc_vol;
@@ -91,7 +86,6 @@ int cl_number_of_shell_poly_connections;
 int cl_num_load_monos;
 double cl_load_frac;
 double cl_polymer_mono_rad, cl_shell_mono_rad;
-bool cl_print_lammps;
 double cl_kt, cl_new_kt, cl_dt, cl_polymer_tdiff_coeff_factor;
 bool cl_pdb;
 bool cl_lowt_protocol, cl_box_resize, cl_extended_relaxation;
@@ -109,8 +103,6 @@ FILE *springfile;
 char springfilename[128];
 FILE *extfile;
 char extfilename[128];
-FILE *ylmfile;
-char ylmname[128];
 FILE *fourierfile;
 char fouriername[128];
 FILE *totforcefile;
@@ -127,8 +119,8 @@ initialize_cl();
 
 int option;
 //remaining options are
-//eHJR
-while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v:C:F:w:p:y:d:q:g:h:X:Z:A:B:W:Y:O:D:E:Q:m:G:i:K:j:U:I:")) != -1)
+//epHJRS
+while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:k:P:V:N:n:M:a:c:v:C:F:w:y:d:q:g:h:X:Z:A:B:W:Y:O:D:E:Q:m:G:i:K:j:U:I:")) != -1)
 {
  switch(option)
  {
@@ -178,10 +170,6 @@ while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v
 	if(atoi(optarg) == 1)
 	  cl_extensional_springs_only = true;
 	break;
-  case 'S':
-	if(atoi(optarg) == 1)
-	  cl_solid_interior = true;
-	break;
   case 'k':
 	cl_springconst = atof(optarg); break;
   case 'v':
@@ -207,10 +195,6 @@ while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v
 	break;
   case 'i':
 	cl_shell_mono_rad = atof(optarg);
-	break;
-  case 'p':
-	if(atoi(optarg) == 1)
-	  cl_print_lammps = true;
 	break;
   case 'y':
 	cl_kt = atof(optarg);
@@ -277,7 +261,7 @@ while( (option = getopt(argc, argv, "t:x:s:f:b:r:z:l:T:L:u:o:S:k:P:V:N:n:M:a:c:v
         cl_crosslink_spring_factor=atof(optarg);
         break;
   case '?':
-	fprintf(stderr, "menu:\n");
+	fprintf(stderr, "(incomplete) menu:\n");
 	fprintf(stderr, "trial -t\n");
 	fprintf(stderr, "dt -d\n");
 	fprintf(stderr, "force -f\n");
@@ -355,7 +339,7 @@ for(ii = 0; ii < NUMBER_OF_MONOMERS; ii++)
 	    fprintf(stderr, "low temp step %llu\n", ii);   
 	
 	   monomer_dynamics(false, ii);	
-           filament_interactions();
+           polymer_interactions();
            update_system(ii);
 
 	   if(ii%(25*NUMSKIP) == 0)
@@ -401,7 +385,7 @@ if(HYSTERESIS)
       }
 
 	monomer_dynamics(false, ii);
-        filament_interactions();
+        polymer_interactions();
         update_system(ii);
 
 	if(BOX_RESIZE)
@@ -453,44 +437,24 @@ else
 	 if(THERMAL)
 	 {
               (mono_list[qq]).translational_brownian_move(ii);
-	      if(SOLID_INTERIOR)
-		 central_mono.translational_brownian_move(ii);	
          }
-
-	 if(SOLID_INTERIOR)
-	 {
-		if(central_mono.calculate_distance_sq(&mono_list[qq], PREVIOUS) < SHELL_RADIUS*SHELL_RADIUS)
-		{
-		//	fprintf(stderr, "r_central= %g %g %g, r_mono= %g %g %g\n", central_mono.get_prev_pos(0), central_mono.get_prev_pos(1), central_mono.get_prev_pos(2), mono_list[qq].get_prev_pos(0), mono_list[qq].get_prev_pos(1), mono_list[qq].get_prev_pos(2));
-			central_mono.sys_force(&mono_list[qq]);
-		//	int wait;
-		//	scanf("%i", &wait);
-		}
-	 }
 	
 	}
 }//else, springs only
 
-//fprintf(stderr, "r_central= %g %g %g\n", central_mono.get_prev_pos(0), central_mono.get_prev_pos(1), central_mono.get_prev_pos(2));
-        filament_interactions();
+        polymer_interactions();
 
 	update_system(ii);
 
 
 if(PDB)
-/*
-if(THERMAL && !SPRINGS_ONLY)
-*/if(ii%PDB_SKIP == 0)
-/*if(TRIALNUMBER % 22 == 0)
-if((TRIALNUMBER%11 == 0) || (TRIALNUMBER > 999990) || ((TRIALNUMBER > 28435) && (TRIALNUMBER < 28442)) )
-*/{
+if(ii%PDB_SKIP == 0)
+{
     write_state_to_pdb(ii);
 }
-/*#endif
-*/
         if(ii%(NUMSKIP*2) == 0)
 	{
-          print_obstacle_pos(ii);
+          print_ext(ii);
 	  
 	  #if PRINT_SHELL_SPRING
 	  print_shell_spring_data(ii);
@@ -498,8 +462,8 @@ if((TRIALNUMBER%11 == 0) || (TRIALNUMBER > 999990) || ((TRIALNUMBER > 28435) && 
           if(ii%(NUMSKIP*2000) == 0)
                 print_stresses(ii);
 	  #endif
-	  #if (PRINT_FOURIER || PRINT_YLM)
-	  print_ylm(ii);
+	  #if PRINT_FOURIER 
+	  print_fourier(ii);
 	  #endif
 	  #if LOAD_TEST
 	  print_load_test(ii);
@@ -515,15 +479,10 @@ if((TRIALNUMBER%11 == 0) || (TRIALNUMBER > 999990) || ((TRIALNUMBER > 28435) && 
 
    }//for(....) numsteps
    
-//if I uncomment this, make sure to remove setting of x0 after the transient
-   //print_final_config();
 
    fclose(extfile);
    #if PRINT_SHELL_SPRING
    fclose(springfile);
-   #endif
-   #if PRINT_YLM
-   fclose(ylmfile);
    #endif
    #if PRINT_FOURIER
    fclose(fourierfile);
@@ -536,11 +495,8 @@ if((TRIALNUMBER%11 == 0) || (TRIALNUMBER > 999990) || ((TRIALNUMBER > 28435) && 
    dummy= system(mvcommand);
 
 
-fprintf(stderr, "trial completed.\n");
-//   fprintf(stdout, "Press enter to end.\n");
+   fprintf(stderr, "trial completed.\n");
    
-//   char hold_on;
-//   scanf("%c", &hold_on);
    return 0;
 }
 

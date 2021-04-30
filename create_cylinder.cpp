@@ -62,7 +62,7 @@ if(ii % NUMSKIP == 0)
 if(!SPRINGS_ONLY)
 {
         monomer_dynamics(true,0);//let monomers relax a bit
-        filament_interactions();//to keep the polymer in a string
+        polymer_interactions();//to keep the polymer in a string
 
 	for(jj = NUMBER_IN_POLYMER; jj < NUMBER_IN_POLYMER+2*num_boundary; jj++)
 	{

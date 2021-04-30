@@ -14,7 +14,7 @@ initialize_neighbor_list();
 
 cl_num_load_monos = (int)(cl_num_shell_monos*cl_load_frac);
 
-//initialize ParB-DNA subunits
+//initialize polymer subunits
 for(n = 0; n < NUMBER_IN_POLYMER; n++)
 {
   dynamic_monomer tempdmono(n, POLYMER_TDIFF_COEFF_FACTOR*TDIFF_COEFF);
@@ -32,27 +32,10 @@ for(n = 0; n < NUMBER_IN_POLYMER; n++)
       mono_list[n].set_radius(cl_shell_mono_rad);
    } // create rest of monomer list
 
-
-//always initialize central mono?
-/*if(SOLID_INTERIOR)
-{*/
- dynamic_monomer tempdmono(0, TDIFF_COEFF/SHELL_RADIUS);
- central_mono = tempdmono;
- central_mono.set_radius(SHELL_RADIUS-MONO_RAD);//subtract mono rad b/c force subroutines add mono rad to overlap dist 
- for(kk = 0; kk < DIMENSION; kk++)
-  central_mono.set_pos(kk, L[kk]*0.5);
- central_mono.set_prev_pos();
-//}
-
-//in the shell code OBVIOUSLY this must come next, or your code will crash!
-
+//in the shell code this must come next, or your code will crash!
 if(NUMBER_OF_MONOMERS > num_shell_monos)
    create_polymer();
 
-//fprintf(stderr, "after pol %i\n", pairs.size());
-//#endif
-
-//fprintf(stderr, "before shell %i\n", pairs.size());
 
 if(CYLINDER)
 {
@@ -68,16 +51,9 @@ else
   create_shell();
 }
 }
-//fprintf(stderr, "after shell %i\n", pairs.size());
 
   update_system(0);
 
-if(cl_print_lammps)
-{
-	print_lammps_file();
-	fprintf(stderr, "Printed a file for LAMMPS. Exiting.\n");
-	exit(1);
-}
 
 for(ii = 0; ii < NUMBER_OF_MONOMERS; ii++)
   mono_list[ii].set_x0();
@@ -132,7 +108,7 @@ if(ii % (NUMSKIP*10) == 0)
 
 monomer_dynamics(true, 0); 
 
-filament_interactions();
+polymer_interactions();
 
 update_system(0);
 }
@@ -152,30 +128,20 @@ void initialize_system_params()
 
 //initialize ranf(), the uniform generator   
    iseed0 = rseed+217;//TRIALNUMBER+217;
-   iseed1 = iseed0 + 2;
-   iseed2 = iseed1 + 2;
-   iseed3 = iseed2 + 2;
-   iseed4 = iseed3 + 2;
+   iseed2 = iseed0 + 4;
+   iseed4 = iseed2 + 4;
    iseed5 = iseed4 + 2;
    iseed6 = iseed5 + 2;
    RNUM0.set(iseed0+3);
    RNUM1.set(iseed0+5);
 
-spring_mono_id = -1;
+   spring_mono_id = -1;
 
 //initialize the gaussian generators
-   gauss_prefact1 = 1./(sqrt(sigma1sq*TWOPI)); //prefactor, and maximum in probability distribution
-   gauss_exp_const1 = -1./(2.*sigma1sq);
-   gauss_range1 = 2.*RANGE_FACTOR1;//Want range to extend to least likely event on both sides of 0.
-                                             //10sigma in each direction
    
    gauss_prefact2 = 1./(sqrt(sigma2sq*TWOPI));
    gauss_range2 = 2.*RANGE_FACTOR2;
    gauss_exp_const2 = -1./(2.*sigma2sq);
-   
-   gauss_prefact3 = 1./(sqrt(sigma3sq*TWOPI));
-   gauss_range3 = 2.*RANGE_FACTOR3;
-   gauss_exp_const3 = -1./(2.*sigma3sq);
    
    gauss_prefact6 = 1./(sqrt(sigma6sq*TWOPI));
    gauss_range6 = 2.*RANGE_FACTOR6;
@@ -248,7 +214,6 @@ void initialize_cl()
 	cl_length_dependent_springs = false;
 	cl_ldep_factor = 10.;
 	cl_os_pressure = 0.0;
-	cl_solid_interior = false;
 	cl_springconst = 1.0;
 	cl_polymer_exc_vol_spring = 100.0;
 	cl_springs_only = true;
@@ -268,7 +233,6 @@ void initialize_cl()
 
 	cl_polymer_mono_rad = 0.5;
 	cl_shell_mono_rad = 0.5;
-	cl_print_lammps = false;
 	cl_kt = 1.0;
 	cl_new_kt = cl_kt;
 	cl_dt = 5.e-4;
@@ -297,10 +261,6 @@ void initialize_files()
       sprintf(extfilename, "/tmp/radius_of_gyrationsq%6.6i", TRIALNUMBER);
       extfile = fopen(extfilename, "w");	
 
-#if PRINT_YLM
-      sprintf(ylmname, "/tmp/ylm_pert_data%6.6i", TRIALNUMBER);
-      ylmfile = fopen(ylmname, "w");
-#endif
 
 #if PRINT_FOURIER
       sprintf(fouriername, "/tmp/fourier_pert_data%6.6i", TRIALNUMBER);
@@ -387,102 +347,9 @@ for(ii = NUMBER_IN_POLYMER; ii < NUMBER_OF_MONOMERS; ii++)
    }
 }
 
-//choose closest 10% to x=0 and LX
-/*
-
-make sure to put load into monodynamics
-*/
-//exit(1);
 }
 
 
-
-
-void print_lammps_file()
-{
-int ii, kk;
-int num_atom_types = 2;//num_shell_monos+1;
-int num_bond_types = 2;//pairs.size() - NUMBER_IN_POLYMER + 1;
-
-char lammpsname[128];
-FILE *lammpsfile;
-
-sprintf(lammpsname, "output/lammps%6.6i", TRIALNUMBER);
-lammpsfile= fopen(lammpsname, "w");
-
-fprintf(lammpsfile, "LAMMPS configuration for r=%g N_poly=%i N_shell=%i\n", SHELL_RADIUS, NUMBER_IN_POLYMER, num_shell_monos);
-fprintf(lammpsfile, "\n");
-
-fprintf(lammpsfile, "%i atoms\n", NUMBER_OF_MONOMERS);
-fprintf(lammpsfile, "%i bonds\n", int(pairs.size()));
-fprintf(lammpsfile, "0 angles\n");
-fprintf(lammpsfile, "0 dihedrals\n");
-fprintf(lammpsfile, "0 impropers\n");
-fprintf(lammpsfile, "\n");
-
-fprintf(lammpsfile, "%i atom types\n", num_atom_types);
-fprintf(lammpsfile, "%i bond types\n", num_bond_types);
-//fprintf(lammpsfile, "0 angle types\n");
-fprintf(lammpsfile, "\n");
-
-fprintf(lammpsfile, "Masses\n");
-fprintf(lammpsfile, "\n");
-for(ii = 0; ii < num_atom_types; ii++)
- fprintf(lammpsfile, "%i 1\n", ii+1); 
-fprintf(lammpsfile, "\n");
-
-fprintf(lammpsfile, "Bond Coeffs\n");
-fprintf(lammpsfile, "\n");
-fprintf(lammpsfile, "%i %g\n", 1, BOND_SPRING); 
-for(ii = 1; ii < num_bond_types; ii++)
- fprintf(lammpsfile, "%i %g\n", ii+1, SHELL_BOND_SPRING); 
-fprintf(lammpsfile, "\n");
-
-fprintf(lammpsfile, "Atoms\n");
-fprintf(lammpsfile, "\n");
-for(ii = 0; ii < NUMBER_IN_POLYMER; ii++)
-{
-	fprintf(lammpsfile, "%i ", ii+1);//monomer id	
-	fprintf(lammpsfile, "1 ");//monomer type is polymer monomer
-	for(kk = 0; kk < DIMENSION; kk++)
-	 fprintf(lammpsfile, "%g ", mono_list[ii].get_pos(kk));//position
-	fprintf(lammpsfile, "\n");
-}
-for(ii = NUMBER_IN_POLYMER; ii < NUMBER_OF_MONOMERS; ii++)
-{
-        fprintf(lammpsfile, "%i ", ii+1);//monomer id   
-	fprintf(lammpsfile, "2 ");//shell mono
-//        fprintf(lammpsfile, "%i ", ii+2-NUMBER_IN_POLYMER);//monomer type is polymer monomer
-	for(kk = 0; kk < DIMENSION; kk++)
-         fprintf(lammpsfile, "%g ", mono_list[ii].get_pos(kk));//position
-        fprintf(lammpsfile, "\n");
-}
-fprintf(lammpsfile, "\n");
-
-fprintf(lammpsfile, "Bonds\n");
-fprintf(lammpsfile, "\n");
-for(ii = 0; ii < NUMBER_IN_POLYMER - 1; ii++)
-{
-	fprintf(lammpsfile, "%i ", ii+1);//bond id
-	fprintf(lammpsfile, "%i ", 1);// bond type is polymer mono bond
-	fprintf(lammpsfile, "%li %li ", (*(pairs[ii].first)).get_id()+1, (*(pairs[ii].second)).get_id()+1);//monomers involved in the bond
-	fprintf(lammpsfile, "\n");
-}
-for(ii = NUMBER_IN_POLYMER - 1; ii < pairs.size(); ii++)
-{
-	fprintf(lammpsfile, "%i ", ii+1);//bond id
-	fprintf(lammpsfile, "2 ");//bond type is shell mono bond..
-//	fprintf(lammpsfile, "%i ", ii+2-NUMBER_IN_POLYMER);//bond type
-	fprintf(lammpsfile, "%li %li ", (*(pairs[ii].first)).get_id()+1, (*(pairs[ii].second)).get_id()+1);//monomers involved in the bond
-        fprintf(lammpsfile, "\n");
-}
-fprintf(lammpsfile, "\n");
-
-fflush(lammpsfile);
-fclose(lammpsfile);
-
-
-}
 
 
 
@@ -514,24 +381,6 @@ for(ii = 0; ii < NUMBER_OF_MONOMERS; ii++)
 
 pipette_dist_from_center = 0.5*(max_shell - min_shell);
 
-
-/*
-fprintf(stderr, "max %g min %g misalign %g pipette %g box %g\n", max_shell, min_shell, misalignment, pipette_dist_from_center, L[0]);
-
-//find max and min again..
-min_shell = 9.*L[0];
-max_shell = -9.*L[0];
-for(ii = NUMBER_IN_POLYMER; ii < NUMBER_OF_MONOMERS; ii++)
-{
-        monox = mono_list[ii].get_prev_pos(0);
-        if(monox < min_shell)
-                min_shell = monox;
-        else if(monox > max_shell)
-                max_shell = monox;
-}
-
-fprintf(stderr, "new max %g new min %g pipette %g\n",  max_shell, min_shell, pipette_dist_from_center);
-*/
 }
 
 

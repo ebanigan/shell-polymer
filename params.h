@@ -22,7 +22,6 @@ using namespace boost::math;
 
 #define HYSTERESIS cl_hysteresis
 
-#define PRINT_YLM false
 #define PRINT_SHELL_SPRING false//movie
 #define PRINT_FOURIER true
 
@@ -49,7 +48,7 @@ using namespace boost::math;
 #define MODIFIED_SHELL_EXC_VOL cl_modified_shell_exc_vol
 
 #define TRIALNUMBER cl_trialnumber
-#define rseed cl_rseed//419//random # seed
+#define rseed cl_rseed//random # seed
 
 #define LOAD false
 
@@ -68,22 +67,12 @@ using namespace boost::math;
 #define NUM_LOAD_MONOS cl_num_load_monos
 #define OS_PRESSURE cl_os_pressure
 #define SHELL_BOND_SPRING cl_shell_bond_spring//(1.0*BOND_SPRING)
-#define SOLID_INTERIOR cl_solid_interior
 
 #define NUMBER_OF_MONOMERS (num_shell_monos+NUMBER_IN_POLYMER)//total number of "monomer" objects in the system
-
-#define BOOK_KEEPING_TEST true//set to true to run book_keeping_tests() -- need this true to run number_free()
-#define PRINT_NUM_IN_FIL true//set to true if want to print #monos in filaments (instead of free + or - ends) to file
-
-#define HARMONIC_REPEL true/*True: Disks will repel each other with a soft harmonic repulsion*/
-#define ROTATE false
-
-#define ORPOT true//bool for orientatin potential on/off
-#define SINGLE_POLYMER false //True: Initialize one long, straight chain of monomers
 #define PDB cl_pdb//false//true
 
 #define dt cl_dt//5e-4//2.5e-4 for high temp or l-dependent springs
-#define NUMSTEPS cl_numsteps//((long)30000000+1)//((long)20e6+1)
+#define NUMSTEPS cl_numsteps//((long)20e6+1)
 #define NUMSKIP 1000//2000
 
 #define NUM_INIT_STEPS 10//25000//((long)2e6)//10e6
@@ -91,23 +80,17 @@ using namespace boost::math;
 
 #define DIMENSION 3
 //length of sim box in each dimension... in general these should be greater than 3.3*MONO_DIAM so that NX,NY,NZ >= 3
-#define LX cl_lx//50.//(200*MONO_DIAM)
-#define LY cl_ly//(4.05*SHELL_RADIUS)//(200*MONO_DIAM)
-#define LZ LY//(200*MONO_DIAM)
+#define LX cl_lx//50.
+#define LY cl_ly//(4.05*SHELL_RADIUS)
+#define LZ LY
 
 #define KT cl_kt//1.e-3//low T = 1.e-3 //high T = 10.//1.
-//#define VISCOSITY 1.//(KT*1000.*dt/(12.*PI*MONO_RAD*MONO_RAD*MONO_RAD))
 #define FRICTION_COEFF 1.// 6pi*mono_rad*viscosity
 #define MONO_MASS 1.
-#define MONO_RAD 0.5//monomer diameter = 5nm (Lee and Liu, 2008)
+#define MONO_RAD 0.5
 #define MONO_RAD2 (MONO_RAD*MONO_RAD)
 #define MONO_DIAM (2.*MONO_RAD)
 #define MONO_DIAM2 (MONO_DIAM*MONO_DIAM)
-
-#define OBSTACLE_RAD (10.*MONO_DIAM)
-#define OBSTACLE_RAD2 (OBSTACLE_RAD*OBSTACLE_RAD)
-#define OBSTACLE_MASS 1.
-#define OBSTACLE_FRIC (20.*FRICTION_COEFF)
 
 
 #define SPRINGCONST (cl_springconst)//((100.*KT)/(MONO_DIAM*MONO_DIAM))//soft repulsion coeff.
@@ -133,12 +116,10 @@ using namespace boost::math;
 //ranges set to be 10*std dev.
 #define sigma1sq (2.*TDIFF_COEFF*dt)
 #define sigma2sq (2.*RDIFF_COEFF*dt)
-#define sigma3sq (2.*TDIFF_COEFF/SHELL_RADIUS*dt)
 #define sigma6sq (2.*RDIFF_COEFF*dt/DNA_DRAG_FACTOR)
 
 #define RANGE_FACTOR1 (7.*sqrt(sigma1sq))//(10.*sqrt(sigma1sq))//gives max fluctuation
 #define RANGE_FACTOR2 (10.*sqrt(sigma2sq))
-#define RANGE_FACTOR3 (10.*sqrt(sigma3sq))
 #define RANGE_FACTOR6 (10.*sqrt(sigma6sq))
                          /*Determines size of range of possible Gaussian random #'s generated.
                            Should be small enough so that we disallow crazy fluctuations.  Moreover,
@@ -201,7 +182,6 @@ See, for ex., Einstein's Investigations on the Theory of Brownian Motion*/
 #define CROSSLINK true //crosslink the bundle
 
 #define PRINT_CM_ONLY false
-#define PRINT_RGYR true
 
 //variables for polymer polarization vectors
 #define POL_ANGLE (PI*10./180.)//Alternatively, this could be defined as TWOPI/PITCH, if we define PITCH to be the number of monomers for the preferred polarization to rotate 2pi

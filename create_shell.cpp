@@ -62,7 +62,7 @@ if(ii % (4*NUMSKIP) == 0)
 if((!SPRINGS_ONLY) || EXTENDED_RELAXATION)
 {
 	monomer_dynamics(true,0);//let monomers relax a bit
-	filament_interactions();//to keep the polymer in a string
+	polymer_interactions();//to keep the polymer in a string
 	update_system(ii);
 }
 

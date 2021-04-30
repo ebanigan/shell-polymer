@@ -1,8 +1,6 @@
 #include "dynamic_monomer_functions.h"
 //#include "neighbor_list.h"
-
 //using namespace std;
-
 //#include <vector>
 
 /*
@@ -303,7 +301,7 @@ void crosslink_potential()
 
 /*
  * Added the bool nearest_neighbors to monomer_pair.  Also added vector<monomer_pair> nextnnpairs to code.
- * Then, in filament_interactions(), call next_nearest_neighbor_list.polarization_interaction(), as well as pairs.polarization_interaction().
+ * Then, in polymer_interactions(), call next_nearest_neighbor_list.polarization_interaction(), as well as pairs.polarization_interaction().
  * */
 
 //potential that tends to align polarization vectors at POL_ANGLE

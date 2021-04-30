@@ -2,10 +2,8 @@
 
 //global variables
 
-extern int iseed0, iseed1, iseed2, iseed3, iseed4, iseed5, iseed6; //random # seed
-extern double gauss_prefact1, gauss_exp_const1, gauss_range1;
+extern int iseed0, iseed2, iseed4, iseed5, iseed6; //random # seed
 extern double gauss_prefact2, gauss_exp_const2, gauss_range2;
-extern double gauss_prefact3, gauss_exp_const3, gauss_range3;
 extern double gauss_prefact6, gauss_exp_const6, gauss_range6;
 extern double gauss_prefact_std, gauss_exp_const_std, gauss_range_std;
 extern double L[DIMENSION];
@@ -28,7 +26,6 @@ extern int cl_lower_bound_connectivity, cl_upper_bound_connectivity;
 extern bool cl_springs_only, cl_thermal, cl_length_dependent_springs, cl_extensional_springs_only;
 extern double cl_ldep_factor;
 extern double cl_os_pressure;
-extern bool cl_solid_interior;
 extern double cl_springconst, cl_shell_bond_spring, cl_polymer_exc_vol_spring;
 extern bool cl_variable_bond_length, cl_modified_shell_exc_vol;
 extern int cl_number_in_polymer, cl_num_shell_monos;
@@ -39,7 +36,6 @@ extern double shell_cm[DIMENSION];
 extern int cl_num_load_monos;
 extern double cl_load_frac;
 extern double cl_polymer_mono_rad, cl_shell_mono_rad;
-extern bool cl_print_lammps;
 extern double cl_kt, cl_new_kt, cl_dt, cl_polymer_tdiff_coeff_factor;
 extern bool cl_pdb;
 
@@ -72,8 +68,6 @@ extern FILE *springfile;
 extern char springfilename[128];
 extern FILE *extfile;
 extern char extfilename[128];
-extern FILE *ylmfile;
-extern char ylmname[128];
 extern FILE *fourierfile;
 extern char fouriername[128];
 extern FILE *totforcefile;

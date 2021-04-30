@@ -1,4 +1,4 @@
-void print_obstacle_pos(unsigned long long step)
+void print_ext(unsigned long long step)
 {
      char filename[96];
      FILE *outfile;
@@ -10,32 +10,6 @@ void print_obstacle_pos(unsigned long long step)
 
 if(step >= 0)
 {
-
-/*****central mono for solid interior********/
-if(SOLID_INTERIOR)
-{
-	char filenameS[96];
-	FILE *outfileS;
-sprintf(filenameS, "output/central_mono%6.6i", TRIALNUMBER);
-
-if(step == 0)
- outfileS = fopen(filenameS, "w");
-else
- outfileS = fopen(filenameS, "a");
-fprintf(outfileS, "%llu", step);
-for(kk = 0; kk < DIMENSION; kk++)
-{
-	fprintf(outfileS, " %g", central_mono.get_prev_pos(kk));
-}
-fprintf(outfileS, "\n");
-
-fflush(outfileS);
-fclose(outfileS);
-}
-/********************************************/
-
-
-
 
 /********calculate CM and print if desired*********/
 for(ii = 0; ii < NUMBER_IN_POLYMER; ii++)
@@ -121,13 +95,7 @@ if(LENGTH_CONTROLLED_LOAD)
   fflush(totforcefile);
 }
 
-/*if((NUMBER_IN_POLYMER > 0) && (num_shell_monos > 0))
-{
-//extension is along x; so, really, it would be more useful to print Rgx2 and then Rgy2+Rgz2
-
-fprintf(extfile, "%li %g %g %g %g %g\n", step, -2., max_y-min_y, max_z-min_z, shell_rgx2/num_shell_monos, max_shell-min_shell);//the -2. is an indicator for Rg files that have max_y-min_y and the corrected max_z-min_z; earlier files printed several Rg2 measurements in the first 3 spots (which are always > 0)
-}
-else */if(num_shell_monos > 0)
+if(num_shell_monos > 0)
 {
 if(F_LOAD < -1.e-12)
 fprintf(extfile, "%llu %g %g %g %g %g\n", step, -2., max_y-min_y, max_z-min_z, shell_rgx2/num_shell_monos, mono_list[indentation2].get_prev_pos(0) - mono_list[indentation1].get_prev_pos(0));

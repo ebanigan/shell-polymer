@@ -4,7 +4,7 @@ void create_polymer()
      int kk;
      double initial_pos;
      double sum_sq;
-     double random_displacement[DIMENSION];//used to get random walk for creation of ParB
+     double random_displacement[DIMENSION];//used to get random walk for creation of polymer
      double prev_initial_pos[DIMENSION];
      double total[DIMENSION];
      double temp_pos;		
@@ -202,7 +202,7 @@ if(NUMBER_OF_CROSSLINKS > 0)
 }
 
 monomer_dynamics(true, 0);
-filament_interactions();
+polymer_interactions();
 
 //idea is to relax polymer, while keeping it inside the shell.
 for(jj = 0; jj < NUMBER_IN_POLYMER; jj++)

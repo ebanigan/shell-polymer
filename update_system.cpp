@@ -23,21 +23,9 @@ void update_system(long tstep)
 	  }
 	}
 
-/*
- 	if(num_shell_monos > 0)
-	{
-*/
 	 inv_numshell = 1./((double)num_shell_monos);
          for(kk = 0; kk < DIMENSION; kk++)
 		shell_cm[kk] = 0.;
-/*	}
-	else
-	{
-	inv_numshell = 0.;
-         for(kk = 0; kk < DIMENSION; kk++)
-                shell_cm[kk] = L[kk]*0.5;
-	}
-*/
 
       for(nn = 0; nn < NUMBER_OF_MONOMERS; nn++)
       {
@@ -46,7 +34,7 @@ void update_system(long tstep)
         if(mono_list[nn].get_update_bool())
         {
  	 mono_list[nn].set_prev_pos();
-//don't use polarization in this code...
+//not using polarization in this code...
 //	 mono_list[nn].set_prev_polarization();
         }
         else
@@ -62,11 +50,6 @@ void update_system(long tstep)
       for(kk = 0; kk < DIMENSION; kk++)
 	shell_cm[kk] *= inv_numshell;
 
-
-if(SOLID_INTERIOR)
-{
-	central_mono.set_prev_pos();
-}
 
 update_mono_list();
 
@@ -92,7 +75,6 @@ TOP_WALLFORCE = 0.;
 BOTTOM_WALLFORCE = 0.;
 }
 
-//fprintf(stderr, "cm %g %g %g\n", shell_cm[0], shell_cm[1], shell_cm[2]);
 }
 
 

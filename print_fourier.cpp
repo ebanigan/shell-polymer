@@ -1,6 +1,6 @@
 #define NUM_F_MODES 9
 
-void print_ylm(unsigned long long step)
+void print_fourier(unsigned long long step)
 {
 int ii,kk;
 double delta_r_sh[DIMENSION];//(R-Rsh)
@@ -22,7 +22,6 @@ for(ii = NUMBER_IN_POLYMER; ii < NUMBER_IN_POLYMER + num_shell_monos; ii++)
 	xyrad = rad-delta_r_sh[0]*delta_r_sh[0];
 	rad = sqrt(rad);
 	xyrad = sqrt(xyrad);
-//fprintf(stderr, "dr1 dr2 xyrad %g %g %g\n", delta_r_sh[1], delta_r_sh[2], xyrad);
 	
 
 #if PRINT_FOURIER
@@ -30,9 +29,6 @@ for(ii = NUMBER_IN_POLYMER; ii < NUMBER_IN_POLYMER + num_shell_monos; ii++)
 	{
 	 re_fourier_tot[kk] += (xyrad*re_exp_nphi(delta_r_sh[1], delta_r_sh[2], xyrad, kk));
 	 im_fourier_tot[kk] += (xyrad*im_exp_nphi(delta_r_sh[1], delta_r_sh[2], xyrad, kk));
-
-//	 fprintf(stderr, "exp %g %g ", xyrad, re_exp_nphi(delta_r_sh[1], delta_r_sh[2], xyrad, kk), im_exp_nphi(delta_r_sh[1], delta_r_sh[2], xyrad, kk));
-//	 fprintf(stderr, "newsum %g %g ", re_fourier_tot[kk], im_fourier_tot[kk]);
 	}
 
 #endif//fourier
@@ -54,7 +50,7 @@ fprintf(fourierfile, "\n");
 fflush(fourierfile);
 #endif
 
-}//end print_ylm()
+}//end print_fourier()
 
 
 

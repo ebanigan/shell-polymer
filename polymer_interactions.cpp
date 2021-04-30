@@ -1,7 +1,7 @@
 /*Cycles through all mononmer pairwise connections and modfies position based on
 bond and bending (and torsion, if applicable) potentials*/
 
-void filament_interactions()
+void polymer_interactions()
 {
      long ii,jj;
 

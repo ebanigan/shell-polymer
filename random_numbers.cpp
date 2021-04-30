@@ -29,31 +29,6 @@ return iseed0/rc;
 }//end of ranf0()
 
 
-double ranf1()
-/* Uniform random number generator x(n+1)= a*x(n) mod c
-   with a = pow(7,5) and c = pow(2,31)-1.
-   Copyright (c) Tao Pang 1997. */
-{
-const int ia=16807,ic=2147483647,iq=127773,ir=2836;
-int il,ih,it;
-double rc;
-extern int iseed1;
-ih = iseed1/iq;
-il = iseed1%iq;
-it = ia*il-ir*ih;
-if (it > 0)
-  {
-  iseed1 = it;
-  }
-else
-  {
-iseed1 = ic+it;
-  }
-rc = ic;
-return iseed1/rc;
-}//end of ranf1()
-
-
 double ranf2()
 /* Uniform random number generator x(n+1)= a*x(n) mod c
    with a = pow(7,5) and c = pow(2,31)-1.
@@ -78,31 +53,6 @@ rc = ic;
 return iseed2/rc;
 }//end of ranf2()
 
-
-
-double ranf3()
-/* Uniform random number generator x(n+1)= a*x(n) mod c
-   with a = pow(7,5) and c = pow(2,31)-1.
-   Copyright (c) Tao Pang 1997. */
-{
-const int ia=16807,ic=2147483647,iq=127773,ir=2836;
-int il,ih,it;
-double rc;
-extern int iseed3;
-ih = iseed3/iq;
-il = iseed3%iq;
-it = ia*il-ir*ih;
-if (it > 0)
-  {
-  iseed3 = it;
-  }
-else
-  {
-iseed3 = ic+it;
-  }
-rc = ic;
-return iseed3/rc;
-}//end of ranf3()
 
 
 double ranf4()
@@ -159,24 +109,6 @@ return iseed6/rc;
 
 /*Takes uniformly distributed random numbers and gives random number according to
 Gaussian distribution by the rejection method.*/
-//translational brownian
-double gaussian1()
-{
-       double y, py, ptest;      
-      
-       y = gauss_range1*(ranf1() - 0.5);
-       ptest = gauss_prefact1*ranf1();//gauss_prefact is the maximum value of P_y(y), the probability density function
-       
-       py = gauss_prefact1*exp(gauss_exp_const1*y*y);
-       
-       if(ptest < py)
-	{
-//	  fprintf(stderr, "%g\n", y);
-          return(y);
-	}
-       else
-          return gaussian1();
-}
 
 //rotational brownian motion
 double gaussian2()
@@ -194,21 +126,7 @@ double gaussian2()
           return gaussian2();
 }
 
-//heavy polymer mono trans brownian
-double gaussian3()
-{      
-       double y, py, ptest;      
-       
-       y = gauss_range3*(ranf3() - 0.5);
-       ptest = gauss_prefact3*ranf3();//gauss_prefact is the maximum value of P_y(y), the probability density function
-       
-       py = gauss_prefact3*exp(gauss_exp_const3*y*y);
-       
-       if(ptest < py)
-          return(y);
-       else
-          return gaussian3();
-}
+
 
 
 ///////////////////////////////////////////////////////////////////
@@ -261,8 +179,6 @@ double gaussian_std()
        double y, py, ptest;
 
        y = gauss_range_std*(ranf_std() - 0.5);
-//       ptest = gauss_prefact_std*ranf_std();//gauss_prefact is the maximum value of P_y(y), the probability density function
-//       py = gauss_prefact_std*exp(gauss_exp_const_std*y*y);
        ptest = ranf_std();//gauss_prefact is the maximum value of P_y(y), the probability density function
        py = exp(gauss_exp_const_std*y*y);
 

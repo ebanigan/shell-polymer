@@ -16,17 +16,6 @@ void dynamic_object::translational_brownian_move()
 }//end of translational_brownian_move()
 
 
-/*
-void dynamic_object::rotational_brownian_move()
-{
-
-for(int kk = 0; kk < DIMENSION; kk++)
- polarization[kk] += gaussian2();
-
-renorm_polarization();
-}
-*/
-
 
 void dynamic_object::rotational_brownian_move()
 {
@@ -44,7 +33,6 @@ void dynamic_object::rotational_brownian_move()
     double c_alpha, s_alpha;
      
     //choose number uniformly inside sphere in 3D, in lower D skip this step.
-    #if (DIMENSION == 3)
      for(kk = 0; kk < DIMENSION; kk++)
      {
 
@@ -64,7 +52,6 @@ void dynamic_object::rotational_brownian_move()
     
      for(kk = 0; kk < DIMENSION; kk++)
        nhatdotpolarization += (nhat[kk])*prev_polarization[kk];  
-    #endif
 
 if(rdiffusion_coeff < .99*RDIFF_COEFF)
      alpha = gaussian6();
@@ -73,26 +60,18 @@ else
      c_alpha = cos(alpha);
      s_alpha = sin(alpha);
      
-     #if (DIMENSION == 3)
       for(kk = 0; kk < DIMENSION; kk++)
       {
        polarization[kk] += (prev_polarization[kk])*(c_alpha-1)+(nhat[kk])*nhatdotpolarization*(1.-c_alpha)
                  + s_alpha * ((prev_polarization[(kk+1)%DIMENSION])*nhat[(kk+2)%DIMENSION]
                  - (prev_polarization[(kk+2)%DIMENSION])*nhat[(kk+1)%DIMENSION]);
       }/*From Wolfram Mathworld "Rotation Formula."  Also see Goldstein 1980, p164; Varshalovich et al., p.24.
-       This step used to have somewhat large numerical error. Not sure if it still does.
-       So, renormalize "polarization" every time (at the end of a time step).
-       9/23/08 note that the scheme has been slightly modified (+= instead of =) so that we can use potentials
+       note that the scheme has been slightly modified (+= instead of =) so that we can use potentials
        to modify polarization[kk] in other functions. In particular, we add p'-p_prev to p_current (where p'
        is p_prev under the rotation.*/
 
-     #elif (DIMENSION == 2)
-       polarization[0] = c_alpha*prev_polarization[0] + s_alpha*prev_polarization[1];
-       polarization[1] = c_alpha*prev_polarization[1] - s_alpha*prev_polarization[0];
-     #endif//For serious 2D system, it would be easier to just keep track of angle 
-      //from x polarization (theta) and shift that by Gaussian perturbations
 
-//Taken out 9/23/08
+//unnecessary
 //     renorm_polarization();
 }//end of rotational_brownian_move()
 
@@ -115,16 +94,7 @@ void dynamic_object::set_prev_polarization()
 double dynamic_object::get_theta()
 {
      double theta;
-     
-#if (DIMENSION == 3)
        theta = acos(polarization[2]);//no adjustments needed since 0<theta<pi in 3d
-#elif (DIMENSION == 2)
-       theta = acos(polarization[0]);
-       if(polarization[1] < 0.)
-         theta = TWOPI - theta;
-#else
-       theta = -999.;
-#endif
      return theta;
 }//end of get_theta()
 
@@ -137,35 +107,8 @@ double dynamic_object::get_phi()
         phi = TWOPI - phi;
        
        return phi;
-       /*     
-     polarization0= stheta cphi
-     polarization1= stheta sphi
-     polarization2= ctheta*/
 }//end of get_phi()
 
-/*
-double dynamic_object::calculate_speed()
-{
-   int kk;
-   double speed = 0.;
-   double temp;
-   
-   for(kk = 0; kk < DIMENSION; kk++)
-   {
-     temp = pos[kk] - prev_pos[kk];
-     if(temp > (L[kk])/2.)
-       temp -= L[kk];
-     if(temp < -(L[kk])/2.)
-       temp += L[kk];
-       
-     speed += temp*temp;
-   }
-     
-   speed = invdt*sqrt(speed);
-   
-   return speed;
-}//end calc speed
-*/
 
 double dynamic_object::calculate_distance_sq(dynamic_object *obj2, bool previous_positions)
 {
@@ -176,9 +119,7 @@ double dynamic_object::calculate_distance_sq(dynamic_object *obj2, bool previous
       
       for(kk = 0; kk < DIMENSION; kk++)
       {
-
         temp = calculate_1d_sep(obj2, kk, previous_positions);//uses positions from beginning of time step
-
         distancesq += temp*temp;
       }
       return distancesq;
@@ -256,7 +197,6 @@ void dynamic_object::rotate(double rotation[DIMENSION])
     int kk;
     for(kk = 0; kk < DIMENSION; kk++)
       polarization[kk] += rotation[kk];
-    
 //    renorm_polarization();
 }//end of rotate()
 

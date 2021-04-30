@@ -19,8 +19,6 @@ class dynamic_object{
         double overlap_dist;
 	double tdiff_stdev;
 
-        double z_brownian_move;
-//holds the value of the Brownian move in the z-direction so that we know how much of movement is due to actual forces at each step
 
       public:
       //sample constructor
@@ -96,8 +94,6 @@ class dynamic_object{
         void set_prev_pos();//sets prev_pos = pos, to be used at the beginning of each time step
         void set_prev_polarization();//sets prev_polarization = polarization, to be used at beginning of time step
 
-	double get_z_brownian_move(){return z_brownian_move;}
-
 //set (current) pos and polarization set pos and polarization to an input
         void set_pos(int dd, double position_dd){pos[dd] = position_dd;}//sets position equal to some input
         void set_polarization(int dd, double directionmag){polarization[dd] = directionmag;}
@@ -106,11 +102,6 @@ class dynamic_object{
         double get_theta();//3d and 2d -- note that theta follows convention for 3d (azimuthal) and 2d meanings (polar)
         double get_phi();//3d only polar angle
         
-
-//functions (nontrivial)
-        //calculate velocity via 2pt. differentiation
-      //double calculate_speed();
-
 
 //should feed in two generic dynamical objects for these two:
 
@@ -121,18 +112,16 @@ class dynamic_object{
       double calculate_1d_sep(dynamic_object *obj2, int dd, bool previous_positions);
       
       
-      /*Keeps objs within boundaries of periodically bounded box.*/        
+        /*Keeps objs within boundaries of periodically bounded box.*/        
         void check_translational_pbc();
-/*resets pol vect mag to 1 (maintains vector direction)*/
+        /*resets pol vect mag to 1 (maintains vector direction)*/
         void renorm_polarization();
         
         //moves obj by a specified amount
-//could generalize translational brownian_move to just be move with an input of DIMENSION#-element array of gaussian1()
         void move(double movement[DIMENSION]);
 	void move_1d(int dd, double mvmnt){pos[dd] += mvmnt;}
 
         void rotate(double rotation[DIMENSION]);
-
 
 
 };//end of dynamic_object
@@ -161,7 +150,6 @@ class dynamic_monomer:public monomer, public dynamic_object{
  * crosslink_num is the crosslink pair to which the monomer belongs
  * nextnn_pair_num2 is the id of the next nearest neighbor monomer_pair in which monomer is second.  applicable when there is an interaction between polarization vectors
  */
-		
 
         bool update_bool;//tells sim whether or not to update this mono
 
@@ -294,14 +282,14 @@ void turn_off_binding_mono(){binding_mono = false;}
 double get_load_rest_length(){return load_rest_length;}
 
 
-//adds stochastic motion to particle -- adds gaussian1() to each dimension of position
+//adds stochastic motion to particle -- adds gaussian to each dimension of position. can use gaussian_std if inverf not functional
         void translational_brownian_move(unsigned long long step)
         {
           int kk;
 
           for(kk = 0; kk < DIMENSION; kk++)
           {
-              pos[kk] += tdiff_stdev * gaussian_inverf(step);//gaussian_rand();//gaussian_std();
+              pos[kk] += tdiff_stdev * gaussian_inverf(step);
           }
         }//may want some monos to have higher drag. use "<" instead of "==" because these are doubles not longs... don't want weird numerical errors.
 
@@ -336,6 +324,5 @@ from a uniform distribution. In 2d, rotation is about center of monomer. Does no
 
 
 extern vector<dynamic_monomer> mono_list;
-extern dynamic_monomer central_mono;
 
 
