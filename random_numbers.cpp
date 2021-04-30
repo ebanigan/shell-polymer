@@ -54,32 +54,6 @@ return iseed2/rc;
 }//end of ranf2()
 
 
-
-double ranf4()
-/* Uniform random number generator x(n+1)= a*x(n) mod c
-   with a = pow(7,5) and c = pow(2,31)-1.
-   Copyright (c) Tao Pang 1997. */
-{
-const int ia=16807,ic=2147483647,iq=127773,ir=2836;
-int il,ih,it;
-double rc;
-extern int iseed4;
-ih = iseed4/iq;
-il = iseed4%iq;
-it = ia*il-ir*ih;
-if (it > 0)
-  {
-  iseed4 = it;
-  }
-else
-  {
-iseed4 = ic+it;
-  }
-rc = ic;
-return iseed4/rc;
-}//end of ranf4()
-
-
 double ranf6()
 /* Uniform random number generator x(n+1)= a*x(n) mod c
  *    with a = pow(7,5) and c = pow(2,31)-1.

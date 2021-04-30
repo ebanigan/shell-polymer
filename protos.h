@@ -5,7 +5,6 @@ using namespace std;
 
 extern double ranf0(); //rand # gen (uniform, 0 to 1)
 extern double ranf2();
-extern double ranf4();
 extern double ranf5();
 extern double ranf6();
 extern double gaussian2();//rot brownian for monos

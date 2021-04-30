@@ -34,7 +34,7 @@ vector<monomer_pair> crosslinkpairs;
 
 
 //some variables for rand num generators
-int iseed0, iseed2, iseed4, iseed5, iseed6;
+int iseed0, iseed2, iseed5, iseed6;
 double gauss_prefact2, gauss_exp_const2, gauss_range2;
 double gauss_prefact6, gauss_exp_const6, gauss_range6;
 double gauss_prefact_std, gauss_exp_const_std, gauss_range_std;

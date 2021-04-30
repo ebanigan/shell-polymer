@@ -129,8 +129,7 @@ void initialize_system_params()
 //initialize ranf(), the uniform generator   
    iseed0 = rseed+217;//TRIALNUMBER+217;
    iseed2 = iseed0 + 4;
-   iseed4 = iseed2 + 4;
-   iseed5 = iseed4 + 2;
+   iseed5 = iseed2 + 6;
    iseed6 = iseed5 + 2;
    RNUM0.set(iseed0+3);
    RNUM1.set(iseed0+5);
