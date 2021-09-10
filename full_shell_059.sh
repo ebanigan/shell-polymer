@@ -43,6 +43,5 @@ do
  crosslinkdensity=$(echo "scale=4; (0.15);" | bc)
  shelllinks=$(echo "scale=0; (40);" | bc)
  crossfactor=$(echo "scale=8; (1.);" | bc)
- restartbool=$(echo "scale=0; (0);" | bc)
-./runnucleus -t $trial -f $force -b $spring -v $pexcvol -r $radius -z $seed -l $lowbound -T $therm -L $ldep -u $upbound -P $springsonly -V $variablelength -x $boxlength -N $polylength -n $steps -M $nshell -k $springc -a $shellbond -F $loadfrac -y $kbt -d $dt -q $lcontrol -g $pstiffness -h $pvelocity -w $pmonorad -c $crosslinkdensity -C $shelllinks -I $crossfactor -R $restartbool
+./runnucleus -t $trial -f $force -b $spring -v $pexcvol -r $radius -z $seed -l $lowbound -T $therm -L $ldep -u $upbound -P $springsonly -V $variablelength -x $boxlength -N $polylength -n $steps -M $nshell -k $springc -a $shellbond -F $loadfrac -y $kbt -d $dt -q $lcontrol -g $pstiffness -h $pvelocity -w $pmonorad -c $crosslinkdensity -C $shelllinks -I $crossfactor 
 done
