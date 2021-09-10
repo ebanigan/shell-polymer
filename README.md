@@ -1,5 +1,9 @@
 ## Description
-Brownian dynamics code to simulate polymeric shell + interior polymer model of cell nucleus as in Refs [1-3].
+Branch of Brownian dynamics code to simulate polymeric shell + interior polymer model of cell nucleus as in Refs [1-3].
+
+Code to study dynamic stretching/relaxation in cell nucleus model
+
+THIS BRANCH IS UNDER DEVELOPMENT AND MAY NOT WORK YET. 
 
 *Dependencies*  
 boost C++ library (https://www.boost.org/)
