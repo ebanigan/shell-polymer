@@ -39,68 +39,45 @@ for(kk = 0; kk < DIMENSION; kk++)
 }//if step >=0
 
 
-
-
 /*shell rgyr (in x direction)*/
 double shell_rgx2 = 0.;
-double min_shell = 9.*L[0];
-double max_shell = -9.*L[0];
+double monox;
 
-double max_y = -9.*L[1];
-double max_z = -9.*L[2];
-double min_y = 9.*L[1];
-double min_z = 9.*L[2];
-double monox, monoy, monoz;
-
-double tot_spring_extension = 0.;
+double tot_shell_force=0.;
+vector<double> extensions;
+double shell_extension=0.;
+double yspan, zspan;
 
 //SHELL RG
 for(ii = NUMBER_IN_POLYMER; ii < NUMBER_OF_MONOMERS; ii++)
 {
-	monox = mono_list[ii].get_prev_pos(0);
-	monoy = mono_list[ii].get_prev_pos(1);
-	monoz = mono_list[ii].get_prev_pos(2);
-
-
-	if(monox < min_shell)
-		min_shell = monox; 
-	else if(monox > max_shell)
-		max_shell = monox;
-
-	if(monoy < min_y)
-		min_y = monoy;
-	else if(monoy > max_y)
-		max_y = monoy;
-
-	if(monoz < min_z)
-		min_z = monoz;
-	else if(monoz > max_z)
-		max_z = monoz;
-
+        monox = mono_list[ii].get_prev_pos(0);
 	shell_rgx2 = shell_rgx2 + (monox - shell_cm[0])*(monox - shell_cm[0]);
-
-	if(LENGTH_CONTROLLED_LOAD)
-        if(mono_list[ii].get_load_mono())
-	{
-	   tot_spring_extension += mono_list[ii].get_sign_load()*(0.5*L[0] + mono_list[ii].get_sign_load()*(pipette_dist_from_center - mono_list[ii].get_load_rest_length()) - mono_list[ii].get_prev_pos(0));
-	}
-
 }
+
+//force
+if(LENGTH_CONTROLLED_LOAD) // calculate instantaneous force on pipette / nucleus
+  tot_shell_force=compute_applied_force();
+
+extensions = compute_extension();
+shell_extension= extensions[0];
+yspan=extensions[1];
+zspan=extensions[2];
 
 if(step >= 0)
 {
 if(LENGTH_CONTROLLED_LOAD)
 {
-  fprintf(totforcefile, "%llu %g %g\n", step, PIPETTE_STIFFNESS*tot_spring_extension, pipette_dist_from_center);
+  fprintf(totforcefile, "%llu %g %g\n", step, tot_shell_force, pipette_dist_from_center);
   fflush(totforcefile);
 }
 
 if(num_shell_monos > 0)
 {
 if(F_LOAD < -1.e-12)
-fprintf(extfile, "%llu %g %g %g %g %g\n", step, -2., max_y-min_y, max_z-min_z, shell_rgx2/num_shell_monos, mono_list[indentation2].get_prev_pos(0) - mono_list[indentation1].get_prev_pos(0));
+fprintf(extfile, "%llu %g %g %g %g %g\n", step, -2., yspan, zspan, shell_rgx2/num_shell_monos, mono_list[indentation2].get_prev_pos(0) - mono_list[indentation1].get_prev_pos(0));
 else
-fprintf(extfile, "%llu %g %g %g %g %g\n", step, -2., max_y-min_y, max_z-min_z, shell_rgx2/num_shell_monos, max_shell-min_shell);
+fprintf(extfile, "%llu %g %g %g %g %g\n", step, -2., yspan, zspan, shell_rgx2/num_shell_monos, shell_extension);
 }
 else
 {
@@ -110,17 +87,16 @@ fprintf(extfile, "%llu %g %g %g %g %g\n", step, 0., 0., 0., 0., 0.);
 fflush(extfile);
 }//if step>=0
 
-//movie//if(false)
+//to make a movie, get rid of box resizing
+//if(false)
 if(BOX_RESIZE)
 if(step % (NUMSKIP*100) == 0)
 {
-
- resize_box(max_shell-min_shell, max_y-min_y, max_z-min_z);
-  
+ resize_box(shell_extension, yspan, zspan);
 
  if(!THERMAL)
  {
-  if((step > 15500000) && (fabs(max_shell-min_shell - saved_extension) < (0.05*SHELL_RADIUS)*1.e-6)) 
+  if((step > 15500000) && (fabs(shell_extension - saved_extension) < (0.05*SHELL_RADIUS)*1.e-6)) 
   {
 	fprintf(stderr, "converged, exiting\n");
 
@@ -132,7 +108,7 @@ if(step % (NUMSKIP*100) == 0)
   }
   else
   {
-   saved_extension = max_shell-min_shell;
+   saved_extension = shell_extension;
   }
 
  }
@@ -147,7 +123,6 @@ fprintf(outfile, "%li %g %g %g\n", step, center_mass_pos[0], center_mass_pos[1],
      fclose(outfile);
 }
 #endif
-
 
 
 }

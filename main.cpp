@@ -339,8 +339,7 @@ for(ii = 0; ii < NUMBER_OF_MONOMERS; ii++)
 		mono_list[ii].set_tdiff_stdev(sqrt(2.*TDIFF_COEFF*dt));//but keep the low temperature noise amplitude
 	  }
 
-	  unsigned long long num_transient_steps = 20000;//2000000;
-          fprintf(stderr, "WARNING: TOO FEW LOW TEMP STEPS\n");
+	  unsigned long long num_transient_steps = 2000000;
           for(ii = 0; ii < num_transient_steps; ii++)
 	  {
 	   if(ii%(50*NUMSKIP) == 0)
