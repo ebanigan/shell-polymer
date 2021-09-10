@@ -46,7 +46,6 @@
             for(kk = 0; kk < N[2]; kk++)
              firstmonoincell[ii][jj][kk] = EMPTY;
 
-
           for(nn = 0; nn < NUMBER_OF_MONOMERS; nn++)
           {
              for(dd = 0; dd < DIMENSION; dd++)
@@ -54,8 +53,8 @@
                cellnum[dd] = (int)((mono_list[nn]).get_pos(dd) * inv_cell_length[dd]);
 	     }
 
-              monolinklist[nn] = firstmonoincell[cellnum[0]][cellnum[1]][cellnum[2]];
-              firstmonoincell[cellnum[0]][cellnum[1]][cellnum[2]] = nn;
+             monolinklist[nn] = firstmonoincell[cellnum[0]][cellnum[1]][cellnum[2]];
+             firstmonoincell[cellnum[0]][cellnum[1]][cellnum[2]] = nn;
 	  }//nn
 
 	}//end of update

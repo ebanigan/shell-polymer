@@ -17,8 +17,14 @@ extern int cl_trialnumber;
 extern double cl_lx, cl_ly;
 extern double cl_polymer_stiffness;
 extern double cl_f_load;
+
 extern bool cl_length_controlled_load;
 extern double cl_pipette_stiffness, cl_pipette_velocity;
+extern bool pipette_released;
+extern double cl_threshold_ext, cl_threshold_force;
+extern unsigned long long cl_release_time, cl_release_relax_time;
+extern int cl_end_zero_force;
+
 extern double cl_bond_spring, cl_crosslink_spring_factor;
 extern double cl_shell_radius;
 extern int cl_rseed;

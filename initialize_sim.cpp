@@ -70,8 +70,11 @@ initial_dynamics();
 if(NUMBER_OF_SHELL_POLY_CONNECTIONS > 0)
         connect_shell_poly();
 
+
 if(LENGTH_CONTROLLED_LOAD)
+{
    set_pipette_position();
+}
 
 if(!COMPRESS)
 {
@@ -192,9 +195,15 @@ void initialize_cl()
 	cl_lx = 50.;
 	cl_polymer_stiffness = 0.;
 	cl_f_load = 0.;
+
 	cl_length_controlled_load = false;
 	cl_pipette_stiffness = 100.;
 	cl_pipette_velocity = 0.1;
+        cl_threshold_ext = -1.;
+        cl_threshold_force = -1.;
+        cl_release_time = (unsigned long long)20000000+1;
+        cl_release_relax_time = (unsigned long long)20000000+1;
+        cl_end_zero_force = 1;
 
 	cl_shell_radius = 5.0;
         cl_ly = 4.05*SHELL_RADIUS;
@@ -360,9 +369,9 @@ for(ii = NUMBER_IN_POLYMER; ii < NUMBER_OF_MONOMERS; ii++)
 {
         monox = mono_list[ii].get_prev_pos(0);
         if(monox < min_shell)
-                min_shell = monox;
+           min_shell = monox;
         else if(monox > max_shell)
-                max_shell = monox;
+           max_shell = monox;
 }
 
 misalignment = max_shell + min_shell - L[0];
@@ -375,6 +384,9 @@ for(ii = 0; ii < NUMBER_OF_MONOMERS; ii++)
 
 
 pipette_dist_from_center = 0.5*(max_shell - min_shell);
+
+
+pipette_released=false;
 
 }
 

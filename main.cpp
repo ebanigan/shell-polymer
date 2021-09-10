@@ -12,12 +12,14 @@
 #include "connect_shell_poly.cpp"
 #include "quicksort.cpp"
 #include "compress.cpp"
+#include "compute_properties.cpp"
 #include "polymer_interactions.cpp"
 #include "create_polymer.cpp"
 #include "initialize_sim.cpp"
 #include "print_stresses.cpp"
 #include "print_load_test.cpp"
 #include "print_fourier.cpp"
+#include "pipette_conditions.cpp"
 #include "run_resize_box.cpp"
 #include "write_state_to_pdb.cpp"
 
@@ -60,6 +62,7 @@ vector<int> num_attachments;
 int spring_mono_id;
 double spring_att_point[DIMENSION];
 double pipette_dist_from_center;
+bool pipette_released;
 
 
 unsigned long long cl_numsteps;
@@ -69,6 +72,10 @@ double cl_polymer_stiffness;
 double cl_f_load;
 bool cl_length_controlled_load;
 double cl_pipette_stiffness, cl_pipette_velocity;
+unsigned long long cl_release_time, cl_release_relax_time;
+int cl_end_zero_force;
+double cl_threshold_ext, cl_threshold_force;
+
 double cl_bond_spring, cl_shell_bond_spring, cl_polymer_exc_vol_spring;
 double cl_shell_radius;
 int cl_rseed;
@@ -332,7 +339,8 @@ for(ii = 0; ii < NUMBER_OF_MONOMERS; ii++)
 		mono_list[ii].set_tdiff_stdev(sqrt(2.*TDIFF_COEFF*dt));//but keep the low temperature noise amplitude
 	  }
 
-	  unsigned long long num_transient_steps = 2000000;
+	  unsigned long long num_transient_steps = 20000;//2000000;
+          fprintf(stderr, "WARNING: TOO FEW LOW TEMP STEPS\n");
           for(ii = 0; ii < num_transient_steps; ii++)
 	  {
 	   if(ii%(50*NUMSKIP) == 0)

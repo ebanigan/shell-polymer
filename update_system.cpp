@@ -60,10 +60,25 @@ for(nn = 0; nn < pairs.size(); nn++)
 for(nn = 0; nn < crosslinkpairs.size(); nn++)
   crosslinkpairs[nn].update_relative_positions();
 
-if(LENGTH_CONTROLLED_LOAD)
-if(tstep > 0)
+
+
+if(LENGTH_CONTROLLED_LOAD) // advance or relax the position of the pipette, test to see if condition to end simulation is met
 {
-  pipette_dist_from_center += dt*PIPETTE_VELOCITY;
+  if(tstep > 0)
+  {
+    if(release_pipette(tstep))
+    {
+      pipette_dist_from_center -= dt*PIPETTE_VELOCITY;
+      if(end_condition(tstep))
+      {
+          print_ext(tstep);
+          exit(1);
+      }
+    }
+    else
+      pipette_dist_from_center += dt*PIPETTE_VELOCITY;
+  }
+  
 }
 
 if(COMPRESS)

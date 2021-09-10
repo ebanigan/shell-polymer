@@ -37,7 +37,7 @@ void resize_box(double shell_width, double transverse1, double transverse2)
 {
   double max_predicted_size = 1.25*(shell_width+0.75*SHELL_RADIUS);
   bool box_changed = false;
-
+  
   if(max_predicted_size > LX)
   {
    fprintf(stderr, "extending LX\n");

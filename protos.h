@@ -43,7 +43,10 @@ extern void print_load_test(long);
 extern void monomer_dynamics(bool, unsigned long long);
 extern void compress(int);
 extern void initialize_cl();
-
+extern vector<double> compute_extension();
+extern double compute_applied_force();
+extern bool release_pipette(unsigned long long);
+extern bool end_condition(unsigned long long);
 extern void create_shell();
 extern double choose_shell_spring_const(double);
 extern void choose_shell_attachments();

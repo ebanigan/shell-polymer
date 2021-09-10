@@ -104,6 +104,12 @@ using namespace boost::math;
 #define PIPETTE_STIFFNESS cl_pipette_stiffness
 #define PIPETTE_VELOCITY cl_pipette_velocity
 
+#define THRESHOLD_EXT cl_threshold_ext
+#define THRESHOLD_FORCE cl_threshold_force
+#define RELEASE_TIME cl_release_time 
+#define RELEASE_RELAX_TIME cl_release_relax_time
+#define END_ZERO_FORCE cl_end_zero_force
+
 //geometric constraints for interactions within filaments
 #define FIL_ANGLE 0.
 #define COS_F_ANGLE (cos(FIL_ANGLE))
