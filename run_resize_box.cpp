@@ -57,7 +57,7 @@ void resize_box(double shell_width, double transverse1, double transverse2)
    {
      cl_ly = 0.9*LY;
      box_changed = true;
-        fprintf(stderr, "shrinking LY, LZ\n");
+     fprintf(stderr, "shrinking LY, LZ\n");
    }
   }
   else if(1.38*transverse1 > LY)
