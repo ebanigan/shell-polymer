@@ -308,8 +308,8 @@ fprintf(stderr, "Options chosen: t %i z %i r %g b %g f %g x %g\n", cl_trialnumbe
 
   char cpcommand[128];
   char mvcommand[128];
-  sprintf(cpcommand, "cp /tmp/[frsy][oapl]*%6.6i output/", TRIALNUMBER);
-  sprintf(mvcommand, "mv /tmp/[frsy][oapl]*%6.6i output/", TRIALNUMBER);
+  sprintf(cpcommand, "cp /tmp/[efrsy][oaplx]*%6.6i output/", TRIALNUMBER);
+  sprintf(mvcommand, "mv /tmp/[efrsy][oaplx]*%6.6i output/", TRIALNUMBER);
 
 if(LOWT_PROTOCOL)
 {
