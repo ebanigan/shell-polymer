@@ -1,5 +1,8 @@
+#define PRINT_SHELL_TO_FILE true
+
 void create_shell()
 {
+
 int ii,jj,kk,ii2;
 double sum_sq = 99.;
 double norm;
@@ -46,7 +49,7 @@ if(EXTENDED_RELAXATION)
 for(ii = 0; ii < relaxation_factor*NUM_RELAXATION_STEPS; ii++)
 {
 if(ii % (4*NUMSKIP) == 0)
-	fprintf(stderr, "relaxation %i\n", ii);
+	fprintf(stderr, "shell relaxation %i\n", ii);
 
 if((!SPRINGS_ONLY) || EXTENDED_RELAXATION)
 {
@@ -290,6 +293,23 @@ for(ii = 0; ii < num_shell_monos; ii++)
 }//for(ii...
 }//while shell is not connected.
 fprintf(stderr, "tot attachments %i tot monos %i\n", tot_attachments, num_shell_monos);
+
+#if PRINT_SHELL_TO_FILE
+   FILE *outfile;
+   char outname[96];
+   sprintf(outname, "output/shell%6.6i.dat", TRIALNUMBER); 
+   outfile = fopen(outname, "w");   
+   for(ii = NUMBER_IN_POLYMER; ii < NUMBER_OF_MONOMERS; ii++)
+   {
+      fprintf(outfile, "%g %g %g\n", mono_list[ii].get_prev_pos(0), mono_list[ii].get_prev_pos(1), mono_list[ii].get_prev_pos(2));
+   }
+   for(ii = NUMBER_IN_POLYMER; ii < NUMBER_OF_MONOMERS; ii++)
+     for(jj = ii+1; jj < NUMBER_OF_MONOMERS; jj++)
+         if(attachment_matrix[ii-NUMBER_IN_POLYMER][jj-NUMBER_IN_POLYMER])
+             fprintf(outfile, "%g %g %g %g %g %g\n", mono_list[ii].get_prev_pos(0), mono_list[ii].get_prev_pos(1), mono_list[ii].get_prev_pos(2), mono_list[jj].get_prev_pos(0), mono_list[jj].get_prev_pos(1), mono_list[jj].get_prev_pos(2));
+   fflush(outfile);
+   fclose(outfile);
+#endif
 
 attachment_matrix.clear();
 main_shell.clear();
