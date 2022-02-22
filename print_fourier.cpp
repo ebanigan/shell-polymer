@@ -1,25 +1,31 @@
 #define NUM_F_MODES 9
 
-void print_fourier(unsigned long long step)
+/*
+This function finds the Fourier modes of a shell.  
+We find Fourier modes of xy radial positions because the system is axially (but not spherically symmetric)
+because tensile forces are exerted at the poles of the shell
+*/
+
+void print_fourier(unsigned long long step)//input is time step
 {
-int ii,kk;
-double delta_r_sh[DIMENSION];//(R-Rsh)
-double theta, phi;
-double rad, xyrad;
+int ii,kk;//indices
+double delta_r_sh[DIMENSION];//(R-Rshell)
+double rad, xyrad; // note rad and xyrad are the RMS shell radii (rad -- spherical sym, xyrad -- cylindrical)
+//rad is computed but not used
 double inv_n=1./num_shell_monos;
 
 vector<double> re_fourier_tot(NUM_F_MODES, 0.);
 vector<double> im_fourier_tot(NUM_F_MODES, 0.);
 
-for(ii = NUMBER_IN_POLYMER; ii < NUMBER_IN_POLYMER + num_shell_monos; ii++)
+for(ii = NUMBER_IN_POLYMER; ii < NUMBER_IN_POLYMER + num_shell_monos; ii++)// note: mono_list (below) is all monomers, shell & polymer, in the simulation
 {
 	rad=0.;
 	for(kk = 0; kk < DIMENSION; kk++)
 	{
-	  delta_r_sh[kk] = mono_list[ii].get_prev_pos(kk) - shell_cm[kk];
+	  delta_r_sh[kk] = mono_list[ii].get_prev_pos(kk) - shell_cm[kk];// shell_cm is the center of mass of the shell
 	  rad += delta_r_sh[kk]*delta_r_sh[kk];
 	}
-	xyrad = rad-delta_r_sh[0]*delta_r_sh[0];
+	xyrad = rad-delta_r_sh[0]*delta_r_sh[0];// 0 is the direction of axial stretching
 	rad = sqrt(rad);
 	xyrad = sqrt(xyrad);
 	
@@ -27,7 +33,8 @@ for(ii = NUMBER_IN_POLYMER; ii < NUMBER_IN_POLYMER + num_shell_monos; ii++)
 #if PRINT_FOURIER
 	for(kk = 0; kk < NUM_F_MODES; kk++)
 	{
-	 re_fourier_tot[kk] += (xyrad*re_exp_nphi(delta_r_sh[1], delta_r_sh[2], xyrad, kk));
+         //do fourier transform
+	 re_fourier_tot[kk] += (xyrad*re_exp_nphi(delta_r_sh[1], delta_r_sh[2], xyrad, kk));//yes, i hard coded 1 & 2. how embarassing
 	 im_fourier_tot[kk] += (xyrad*im_exp_nphi(delta_r_sh[1], delta_r_sh[2], xyrad, kk));
 	}
 
@@ -37,6 +44,7 @@ for(ii = NUMBER_IN_POLYMER; ii < NUMBER_IN_POLYMER + num_shell_monos; ii++)
 
 
 #if PRINT_FOURIER
+//record result
 fprintf(fourierfile, "%llu ", step);
 for(kk = 0; kk < NUM_F_MODES; kk++)
 {
@@ -92,9 +100,6 @@ else//n == 0
         return 0.;
 }
 }
-
-
-
 
 
 
